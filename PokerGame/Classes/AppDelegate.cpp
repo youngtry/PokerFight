@@ -1,6 +1,8 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
-
+#include "AnalysisData.h"
+#include "MakeCard.h"
+#include "GameLayer.h"
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
@@ -27,14 +29,14 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::createWithRect("PokerGame", Rect(0, 0, 960, 640));
+        glview = GLViewImpl::createWithRect("FightWithCard", Rect(0, 0, 1280, 720));
         director->setOpenGLView(glview);
     }
 
-    director->getOpenGLView()->setDesignResolutionSize(960, 640, ResolutionPolicy::SHOW_ALL);
+    director->getOpenGLView()->setDesignResolutionSize(1280, 720, ResolutionPolicy::EXACT_FIT);
 
     // turn on display FPS
-    director->setDisplayStats(true);
+    director->setDisplayStats(false);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
@@ -42,10 +44,12 @@ bool AppDelegate::applicationDidFinishLaunching() {
     FileUtils::getInstance()->addSearchPath("res");
 
     // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+    auto scene = GameLayer::createGameScene();
 
     // run
     director->runWithScene(scene);
+    
+//    AnalysisData::createData()->init("LevelInfo/level001.xml");
 
     return true;
 }

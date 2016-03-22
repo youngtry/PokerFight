@@ -52,6 +52,13 @@
 		67264650BD08F5A9E8B7ED1D /* libcocos2d iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D65417CAF89D7ADE4119FEC /* libcocos2d iOS.a */; };
 		6CC743B7AEC6C4A1F5FEC304 /* res in Resources */ = {isa = PBXBuildFile; fileRef = 01F741B993AED8B544209AD5 /* res */; };
 		8262943E1AAF051F00CB7CF7 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8262943D1AAF051F00CB7CF7 /* Security.framework */; };
+		8F5B639C1CA13D2600D8A3FC /* PokerCard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B638F1CA13D2600D8A3FC /* PokerCard.cpp */; };
+		8F5B639D1CA13D2600D8A3FC /* AnalysisData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B63921CA13D2600D8A3FC /* AnalysisData.cpp */; };
+		8F5B639E1CA13D2600D8A3FC /* MakeCard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B63941CA13D2600D8A3FC /* MakeCard.cpp */; };
+		8F5B639F1CA13D2600D8A3FC /* GameLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B63971CA13D2600D8A3FC /* GameLayer.cpp */; };
+		8F5B63A01CA13D2600D8A3FC /* tools.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B639B1CA13D2600D8A3FC /* tools.mm */; };
+		8F5B63A61CA13E7500D8A3FC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8F5B63A81CA13E7500D8A3FC /* Localizable.strings */; };
+		8F5B63AE1CA144BC00D8A3FC /* GameData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B63AC1CA144BC00D8A3FC /* GameData.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
 		BF1712471292920000B8313A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB412928DE900B8313A /* libz.dylib */; };
 		BF1C47F01293687400B63C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1C47EA1293683800B63C5D /* QuartzCore.framework */; };
@@ -112,6 +119,20 @@
 		52B47A461A53D09B004E4C60 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.1.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
 		5D65417CAF89D7ADE4119FEC /* libcocos2d iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcocos2d iOS.a"; path = "/Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/prebuilt/ios/libcocos2d iOS.a"; sourceTree = "<absolute>"; };
 		8262943D1AAF051F00CB7CF7 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		8F5B638F1CA13D2600D8A3FC /* PokerCard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PokerCard.cpp; sourceTree = "<group>"; };
+		8F5B63901CA13D2600D8A3FC /* PokerCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PokerCard.h; sourceTree = "<group>"; };
+		8F5B63921CA13D2600D8A3FC /* AnalysisData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnalysisData.cpp; sourceTree = "<group>"; };
+		8F5B63931CA13D2600D8A3FC /* AnalysisData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalysisData.h; sourceTree = "<group>"; };
+		8F5B63941CA13D2600D8A3FC /* MakeCard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MakeCard.cpp; sourceTree = "<group>"; };
+		8F5B63951CA13D2600D8A3FC /* MakeCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MakeCard.h; sourceTree = "<group>"; };
+		8F5B63971CA13D2600D8A3FC /* GameLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameLayer.cpp; sourceTree = "<group>"; };
+		8F5B63981CA13D2600D8A3FC /* GameLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameLayer.h; sourceTree = "<group>"; };
+		8F5B639A1CA13D2600D8A3FC /* tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tools.h; sourceTree = "<group>"; };
+		8F5B639B1CA13D2600D8A3FC /* tools.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = tools.mm; sourceTree = "<group>"; };
+		8F5B63A71CA13E7500D8A3FC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8F5B63A91CA13E8200D8A3FC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		8F5B63AC1CA144BC00D8A3FC /* GameData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameData.cpp; sourceTree = "<group>"; };
+		8F5B63AD1CA144BC00D8A3FC /* GameData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameData.h; sourceTree = "<group>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BF170DB412928DE900B8313A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BF1C47EA1293683800B63C5D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -235,6 +256,7 @@
 			isa = PBXGroup;
 			children = (
 				01F741B993AED8B544209AD5 /* res */,
+				8F5B63A81CA13E7500D8A3FC /* Localizable.strings */,
 			);
 			name = Resources;
 			path = ../Resources;
@@ -243,6 +265,10 @@
 		46880B8319C43A87006E1F66 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8F5B638E1CA13D2600D8A3FC /* Card */,
+				8F5B63911CA13D2600D8A3FC /* Data */,
+				8F5B63961CA13D2600D8A3FC /* Scene */,
+				8F5B63991CA13D2600D8A3FC /* Tools */,
 				46880B8419C43A87006E1F66 /* AppDelegate.cpp */,
 				46880B8519C43A87006E1F66 /* AppDelegate.h */,
 				46880B8619C43A87006E1F66 /* HelloWorldScene.cpp */,
@@ -298,6 +324,46 @@
 			name = Icons;
 			path = ios;
 			sourceTree = SOURCE_ROOT;
+		};
+		8F5B638E1CA13D2600D8A3FC /* Card */ = {
+			isa = PBXGroup;
+			children = (
+				8F5B638F1CA13D2600D8A3FC /* PokerCard.cpp */,
+				8F5B63901CA13D2600D8A3FC /* PokerCard.h */,
+			);
+			path = Card;
+			sourceTree = "<group>";
+		};
+		8F5B63911CA13D2600D8A3FC /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				8F5B63921CA13D2600D8A3FC /* AnalysisData.cpp */,
+				8F5B63931CA13D2600D8A3FC /* AnalysisData.h */,
+				8F5B63941CA13D2600D8A3FC /* MakeCard.cpp */,
+				8F5B63951CA13D2600D8A3FC /* MakeCard.h */,
+				8F5B63AC1CA144BC00D8A3FC /* GameData.cpp */,
+				8F5B63AD1CA144BC00D8A3FC /* GameData.h */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		8F5B63961CA13D2600D8A3FC /* Scene */ = {
+			isa = PBXGroup;
+			children = (
+				8F5B63971CA13D2600D8A3FC /* GameLayer.cpp */,
+				8F5B63981CA13D2600D8A3FC /* GameLayer.h */,
+			);
+			path = Scene;
+			sourceTree = "<group>";
+		};
+		8F5B63991CA13D2600D8A3FC /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				8F5B639A1CA13D2600D8A3FC /* tools.h */,
+				8F5B639B1CA13D2600D8A3FC /* tools.mm */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
 		};
 		9FB840E18B0F8082A4A0AB3A /* mac-libs */ = {
 			isa = PBXGroup;
@@ -369,6 +435,7 @@
 				Japanese,
 				French,
 				German,
+				"zh-Hans",
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
@@ -390,6 +457,7 @@
 				5087E77F17EB970100C73F5D /* Default@2x.png in Resources */,
 				50EF629917ECD46A001EB2F8 /* Icon-100.png in Resources */,
 				5087E78317EB970100C73F5D /* Icon-152.png in Resources */,
+				8F5B63A61CA13E7500D8A3FC /* Localizable.strings in Resources */,
 				5087E77D17EB970100C73F5D /* Default-568h@2x.png in Resources */,
 				5087E78517EB970100C73F5D /* Icon-72.png in Resources */,
 				521A8E6519F0C34300D177D7 /* Default-736h@3x.png in Resources */,
@@ -426,8 +494,14 @@
 				46880B8819C43A87006E1F66 /* AppDelegate.cpp in Sources */,
 				46880B8A19C43A87006E1F66 /* HelloWorldScene.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
+				8F5B639C1CA13D2600D8A3FC /* PokerCard.cpp in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
+				8F5B63A01CA13D2600D8A3FC /* tools.mm in Sources */,
+				8F5B639F1CA13D2600D8A3FC /* GameLayer.cpp in Sources */,
+				8F5B639E1CA13D2600D8A3FC /* MakeCard.cpp in Sources */,
+				8F5B63AE1CA144BC00D8A3FC /* GameData.cpp in Sources */,
 				503AE10117EB989F00D1A890 /* main.m in Sources */,
+				8F5B639D1CA13D2600D8A3FC /* AnalysisData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,6 +516,18 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		8F5B63A81CA13E7500D8A3FC /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8F5B63A71CA13E7500D8A3FC /* en */,
+				8F5B63A91CA13E8200D8A3FC /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
@@ -469,10 +555,7 @@
 				);
 				INFOPLIST_FILE = ios/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = (
-					"",
-					"/Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/prebuilt/ios",
-				);
+				LIBRARY_SEARCH_PATHS = " /Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/prebuilt/ios";
 				OTHER_LDFLAGS = (
 					"$(_COCOS_LIB_IOS_BEGIN)",
 					"$(_COCOS_LIB_IOS_END)",
@@ -507,10 +590,7 @@
 				);
 				INFOPLIST_FILE = ios/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				LIBRARY_SEARCH_PATHS = (
-					"",
-					"/Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/prebuilt/ios",
-				);
+				LIBRARY_SEARCH_PATHS = " /Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/prebuilt/ios";
 				OTHER_LDFLAGS = (
 					"$(_COCOS_LIB_IOS_BEGIN)",
 					"$(_COCOS_LIB_IOS_END)",
@@ -546,10 +626,7 @@
 					"/Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/external/glfw3/include/mac",
 				);
 				INFOPLIST_FILE = mac/Info.plist;
-				LIBRARY_SEARCH_PATHS = (
-					"",
-					"/Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/prebuilt/mac",
-				);
+				LIBRARY_SEARCH_PATHS = " /Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/prebuilt/mac";
 				OTHER_LDFLAGS = (
 					"$(_COCOS_LIB_MAC_BEGIN)",
 					"$(_COCOS_LIB_MAC_END)",
@@ -580,10 +657,7 @@
 					"/Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/external/glfw3/include/mac",
 				);
 				INFOPLIST_FILE = mac/Info.plist;
-				LIBRARY_SEARCH_PATHS = (
-					"",
-					"/Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/prebuilt/mac",
-				);
+				LIBRARY_SEARCH_PATHS = " /Applications/Cocos/Cocos2d-x/cocos2d-x-3.10/prebuilt/mac";
 				OTHER_LDFLAGS = (
 					"$(_COCOS_LIB_MAC_BEGIN)",
 					"$(_COCOS_LIB_MAC_END)",

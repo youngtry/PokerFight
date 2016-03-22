@@ -9,6 +9,7 @@
 #include "GameLayer.h"
 #include "../Data/MakeCard.h"
 #include "../Tools/tools.h"
+#include "../Data/GameData.h"
 
 GameLayer::GameLayer()
 :m_BackgroundLayer(NULL)
@@ -38,6 +39,7 @@ GameLayer::GameLayer()
     m_MyCard.clear();
     m_RightCard.clear();
     m_LordCard.clear();
+    m_StoryInfo.clear();
 }
 
 GameLayer::~GameLayer(){
@@ -63,6 +65,9 @@ bool GameLayer::init(){
     if(!Layer::init()){
         return false;
     }
+    m_RoundIndex = UserDefault::getInstance()->getIntegerForKey("RoundIndex", 1);
+    
+    MakeCard::getInstance()->initData(__String::createWithFormat("LevelInfo/level%03d.xml",m_RoundIndex)->getCString());
     
     //初始化数据
     m_winSize = Director::getInstance()->getWinSize();
@@ -85,6 +90,8 @@ void GameLayer::changeToGameState(GameState state){
         //准备状态，铺设基本UI
         createBackground();
         createPlayersLayer();
+        createStoryLayer();
+        showStory();
         return;
     }
     
@@ -144,6 +151,7 @@ void GameLayer::createPlayersLayer(){
     m_PlayerLayer->setAnchorPoint(Vec2(0, 0));
     this->addChild(m_PlayerLayer,PlayerLayerTag);
     
+    srand((unsigned int)time(0));
     
     //左家头像
     int leftindex = rand()%HeadNumber+1;
@@ -172,13 +180,42 @@ void GameLayer::createPlayersLayer(){
 
 #pragma mark ***********故事层相关***********
 void GameLayer::createStoryLayer(){
-    m_StoryLayer = Layer::create();
+    m_StoryLayer = LayerColor::create(Color4B(67, 67, 67, 200));
     m_StoryLayer->setPosition(Vec2(0, 0));
     m_StoryLayer->setContentSize(Size(m_winSize.width, m_winSize.height));
     m_StoryLayer->setAnchorPoint(Vec2(0, 0));
-    this->addChild(m_StoryLayer,StoryLayerTag); 
+    this->addChild(m_StoryLayer,StoryLayerTag);
     
-    m_RoundIndex = UserDefault::getInstance()->getIntegerForKey("RoundIndex", 1);
+    m_StoryInfo = GameData::getInstance()->StoryInfo;
+}
+
+void GameLayer::showStory(){
+    int size = (int)GameData::getInstance()->StoryInfo.size();
+    if(m_StoryInfo.size() == 0){
+        //进入下一阶段
+        m_StoryLayer->stopAllActions();
+        return;
+    }
+    
+    Point pos  = Vec2(m_winSize.width*0.1, m_winSize.height*((float)(0.8/(float)size)*m_StoryInfo.size()));
+
+    string story = getString( m_StoryInfo[0]);
+    m_StoryInfo.erase(m_StoryInfo.begin());
+    
+    string fontpath = "font/Arial.ttf";
+    if(strcmp(getCurrentLanguage().c_str(), "zh-Hans-US") == 0){
+        fontpath = "font/songti.TTF";
+    }
+    
+    Label* storytext = Label::createWithTTF(story.c_str(), fontpath.c_str(), 30);
+    storytext->setColor(Color3B::WHITE);
+    storytext->setPosition(pos);
+    storytext->setAnchorPoint(Vec2(0, 0.5));
+    m_StoryLayer->addChild(storytext);
+    
+    DelayTime* time = DelayTime::create(2.0f);
+    CallFunc* func = CallFunc::create(CC_CALLBACK_0(GameLayer::showStory, this));
+    m_StoryLayer->runAction(Sequence::create(time,func,NULL));
     
 }
 

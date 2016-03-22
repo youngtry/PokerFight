@@ -18,8 +18,6 @@ typedef enum
     PlayerLayerTag,
     StoryLayerTag,
     MenuLayerTag,
-    
-    
 }LayerTag;
 
 typedef enum {
@@ -62,7 +60,7 @@ public:
     
     /*************情节层*************/
     void createStoryLayer();
-    void showStoryWithStringLength(int length);
+    void showStory();
     
     /*************菜单层*************/
     void createMenuLayer();             //创建菜单层内容
@@ -123,7 +121,7 @@ private:
     Sprite* m_RightPlayer;
     
     //剧情层
-    Layer* m_StoryLayer;
+    LayerColor* m_StoryLayer;
     Label* m_Story;
     
     /*****************数据相关*****************/
@@ -133,6 +131,8 @@ private:
     std::vector<PokerCard* > m_MyCard;          //本家手牌
     std::vector<PokerCard* > m_RightCard;       //右家手牌
     std::vector<PokerCard* > m_LordCard;        //地主牌
+    
+    std::vector<std::string > m_StoryInfo;            //剧情信息
     
     int m_LordIndex;                            //地主编号
     

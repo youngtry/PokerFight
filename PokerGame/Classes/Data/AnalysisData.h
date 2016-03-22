@@ -29,6 +29,7 @@ private:
     std::vector<std::pair<int, PokerColor> >  m_LeftData;
     std::vector<std::pair<int, PokerColor>>  m_MyData;
     std::vector<std::pair<int, PokerColor>>  m_RightData;
+    std::vector<std::string > m_Story;
     
     int m_LordIndex;
     

@@ -8,6 +8,7 @@
 
 #include "AnalysisData.h"
 #include "tinyxml2/tinyxml2.h"
+#include "GameData.h"
 using namespace tinyxml2;
 using namespace std;
 
@@ -116,7 +117,7 @@ bool AnalysisData::init(std::string filename){
                         if(strcmp(keyname->Name(), "name") == 0){
                             string key = keyname->Value();
                             log("storykeyname = %s",key.c_str());
-                            
+                            GameData::getInstance()->StoryInfo.push_back(key);
                         }
                         
                     }
@@ -128,6 +129,8 @@ bool AnalysisData::init(std::string filename){
         }
         rootEle = rootEle->NextSiblingElement();
     }
+    
+    GameData::getInstance()->StoryCount = (int)GameData::getInstance()->StoryInfo.size();
     return true;
 }
 

@@ -37,6 +37,8 @@ public:
     
     std::vector<PokerCard* > m_LordCard;
     
+    std::vector<std::string > m_Story;
+    
     int m_LordIndex;
 private:
     

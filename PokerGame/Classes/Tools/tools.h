@@ -15,5 +15,6 @@ using namespace std;
 
 
 string getString(string key);
+string getCurrentLanguage();
 
 #endif /* tools_hpp */

@@ -16,3 +16,11 @@ string getString(string key){
     a = [text UTF8String];
     return a;
 }
+
+string getCurrentLanguage()
+{
+    NSArray *languages = [NSLocale preferredLanguages];
+    NSString *currentLanguage = [languages objectAtIndex:0];
+    log("%s" , [currentLanguage UTF8String]);
+    return [currentLanguage UTF8String];
+}
