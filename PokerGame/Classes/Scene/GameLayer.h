@@ -18,6 +18,7 @@ typedef enum
     PlayerLayerTag,
     StoryLayerTag,
     MenuLayerTag,
+    HandCardLayerTag,
 }LayerTag;
 
 typedef enum {
@@ -62,6 +63,9 @@ public:
     void createStoryLayer();
     void showStory();
     
+    /*************手牌层*************/
+    void createHanderLayer();
+    
     /*************菜单层*************/
     void createMenuLayer();             //创建菜单层内容
     void removeMenuLayer();             //删除菜单层
@@ -83,6 +87,9 @@ public:
     void changeToGameState(GameState state);    //切换流程
     void DealCards();       //发牌
     
+    /*************理牌调整相关*************/
+    void adjustCards();
+    void showLeftCardNumber();
     
     CREATE_FUNC(GameLayer);
     
@@ -119,6 +126,7 @@ private:
     Sprite* m_LeftPlayer;
     Sprite* m_MyPlayer;
     Sprite* m_RightPlayer;
+    Label* m_LeftCardNumberLabel[3];            //剩余牌数label
     
     //剧情层
     LayerColor* m_StoryLayer;
@@ -137,6 +145,11 @@ private:
     int m_LordIndex;                            //地主编号
     
     int m_RoundIndex;                           //关卡编号
+    
+    int m_DealIndex;                            //发牌数目：理牌用
+    
+    
+    int m_LeftCardNumber[3];                    //剩余牌数
     
 };
 

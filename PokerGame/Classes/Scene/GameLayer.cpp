@@ -34,12 +34,17 @@ GameLayer::GameLayer()
 ,m_RoundIndex(0)
 ,m_TopInfoPanel(NULL)
 ,m_LordIndex(-1)
+,m_DealIndex(0)
 {
     m_LeftCard.clear();
     m_MyCard.clear();
     m_RightCard.clear();
     m_LordCard.clear();
     m_StoryInfo.clear();
+    for(int i=0;i<3;i++){
+        m_LeftCardNumber[i] = 0;
+        m_LeftCardNumberLabel[i] = NULL;
+    }
 }
 
 GameLayer::~GameLayer(){
@@ -96,8 +101,60 @@ void GameLayer::changeToGameState(GameState state){
     }
     
     if(state == GameDealCard){
-        
+        createHanderLayer();
+        DealCards();
+        return;
     }
+}
+
+void GameLayer::DealCards(){
+    
+    schedule([=](float df){
+        GameLayer::adjustCards();
+        for(int i=0;i<3;i++){
+            m_LeftCardNumber[i] = m_DealIndex;
+            m_LeftCardNumberLabel[i]->setString(__String::createWithFormat("%d",m_LeftCardNumber[i])->getCString());
+        }
+        m_DealIndex++;
+        log("m_DealIndex = %d",m_DealIndex);
+    },0.1f, CC_REPEAT_FOREVER, 0.0f, "DealCard");
+    
+    
+}
+#pragma mark ***********理牌调整相关***********
+void GameLayer::adjustCards(){
+    if(m_DealIndex == 17){
+        unschedule("DealCard");
+        return;
+    }
+    Point center = Vec2(0, 0);
+    int centerIndex = 0;
+    float delta = 0;
+    
+    if(m_MyCard.size() == 17){
+        delta =  m_winSize.width*0.052;
+    }else{
+        delta =  m_winSize.width*0.044;
+    }
+    
+    for(int i=0;i<m_DealIndex;i++){
+        if(m_DealIndex%2==0){
+            centerIndex = m_DealIndex/2;
+            center.x = m_winSize.width/2-delta/2;
+            center.y = m_winSize.height*0.048;
+        }else{
+            centerIndex = (m_DealIndex+1)/2;
+            center.x = m_winSize.width/2;
+            center.y = m_winSize.height*0.048;
+        }
+        
+        m_MyCard[i]->setPosition(Vec2(center.x+(i-centerIndex)*delta-m_winSize.width*0.02, center.y));
+    }
+    
+}
+
+void GameLayer::showLeftCardNumber(){
+    
 }
 
 #pragma mark ***********背景层相关***********
@@ -159,6 +216,10 @@ void GameLayer::createPlayersLayer(){
     m_LeftPlayer->setPosition(Vec2(m_winSize.width*0.1, m_winSize.height*0.8));
     m_PlayerLayer->addChild(m_LeftPlayer);
     
+    m_LeftCardNumberLabel[0] = Label::createWithCharMap("playercardnumber.png", 20, 28, '0');
+    m_LeftCardNumberLabel[0]->setPosition(Vec2(m_winSize.width*0.17, m_winSize.height*0.9));
+    m_PlayerLayer->addChild(m_LeftCardNumberLabel[0]);
+    
     //本家头像
     int myindex = rand()%HeadNumber+1;
     while (myindex == leftindex) {
@@ -167,6 +228,9 @@ void GameLayer::createPlayersLayer(){
     m_MyPlayer = Sprite::create(__String::createWithFormat("head/head%d.png",myindex)->getCString());
     m_MyPlayer->setPosition(Vec2(m_winSize.width*0.1, m_winSize.height*0.4));
     m_PlayerLayer->addChild(m_MyPlayer);
+    m_LeftCardNumberLabel[1] = Label::createWithCharMap("playercardnumber.png", 20, 28, '0');
+    m_LeftCardNumberLabel[1]->setPosition(Vec2(m_winSize.width*0.17, m_winSize.height*0.45));
+    m_PlayerLayer->addChild(m_LeftCardNumberLabel[1]);
     
     //右家头像
     int rightindex = rand()%HeadNumber+1;
@@ -176,11 +240,14 @@ void GameLayer::createPlayersLayer(){
     m_RightPlayer = Sprite::create(__String::createWithFormat("head/head%d.png",rightindex)->getCString());
     m_RightPlayer->setPosition(Vec2(m_winSize.width*0.9, m_winSize.height*0.8));
     m_PlayerLayer->addChild(m_RightPlayer);
+    m_LeftCardNumberLabel[2] = Label::createWithCharMap("playercardnumber.png", 20, 28, '0');
+    m_LeftCardNumberLabel[2]->setPosition(Vec2(m_winSize.width*0.83, m_winSize.height*0.9));
+    m_PlayerLayer->addChild(m_LeftCardNumberLabel[2]);
 }
 
 #pragma mark ***********故事层相关***********
 void GameLayer::createStoryLayer(){
-    m_StoryLayer = LayerColor::create(Color4B(67, 67, 67, 200));
+    m_StoryLayer = LayerColor::create(Color4B(0, 0, 0, 200));
     m_StoryLayer->setPosition(Vec2(0, 0));
     m_StoryLayer->setContentSize(Size(m_winSize.width, m_winSize.height));
     m_StoryLayer->setAnchorPoint(Vec2(0, 0));
@@ -194,30 +261,59 @@ void GameLayer::showStory(){
     if(m_StoryInfo.size() == 0){
         //进入下一阶段
         m_StoryLayer->stopAllActions();
-        return;
+        MoveTo* move = MoveTo::create(1.0, Vec2(0, m_winSize.height));
+        CallFunc* func = CallFunc::create([=]{
+            m_StoryLayer->removeAllChildren();
+            GameLayer::changeToGameState(GameDealCard);
+        });
+        
+        
+        
+        m_StoryLayer->runAction(Sequence::create(move,func, NULL));
+        
+        
+    }else{
+        Point pos  = Vec2(m_winSize.width*0.1, m_winSize.height*((float)(0.8/(float)size)*m_StoryInfo.size()));
+        
+        string story = getString( m_StoryInfo[0]);
+        m_StoryInfo.erase(m_StoryInfo.begin());
+        
+        string fontpath = "font/Arial.ttf";
+        if(strcmp(getCurrentLanguage().c_str(), "zh-Hans-US") == 0){
+            fontpath = "font/songti.TTF";
+        }
+        
+        Label* storytext = Label::createWithTTF(story.c_str(), fontpath.c_str(), 30);
+        storytext->setColor(Color3B::WHITE);
+        storytext->setPosition(pos);
+        storytext->setAnchorPoint(Vec2(0, 0.5));
+        m_StoryLayer->addChild(storytext);
+        
+        DelayTime* time = DelayTime::create(2.0f);
+        CallFunc* func = CallFunc::create(CC_CALLBACK_0(GameLayer::showStory, this));
+        m_StoryLayer->runAction(Sequence::create(time,func,NULL));
+        
     }
     
-    Point pos  = Vec2(m_winSize.width*0.1, m_winSize.height*((float)(0.8/(float)size)*m_StoryInfo.size()));
-
-    string story = getString( m_StoryInfo[0]);
-    m_StoryInfo.erase(m_StoryInfo.begin());
-    
-    string fontpath = "font/Arial.ttf";
-    if(strcmp(getCurrentLanguage().c_str(), "zh-Hans-US") == 0){
-        fontpath = "font/songti.TTF";
-    }
-    
-    Label* storytext = Label::createWithTTF(story.c_str(), fontpath.c_str(), 30);
-    storytext->setColor(Color3B::WHITE);
-    storytext->setPosition(pos);
-    storytext->setAnchorPoint(Vec2(0, 0.5));
-    m_StoryLayer->addChild(storytext);
-    
-    DelayTime* time = DelayTime::create(2.0f);
-    CallFunc* func = CallFunc::create(CC_CALLBACK_0(GameLayer::showStory, this));
-    m_StoryLayer->runAction(Sequence::create(time,func,NULL));
     
 }
+#pragma mark ***********手牌层相关***********
+void GameLayer::createHanderLayer(){
+    
+    m_HandCardLayer = Layer::create();
+    m_HandCardLayer->setPosition(Vec2(0, 0));
+    m_HandCardLayer->setContentSize(Size(m_winSize.width, m_winSize.height));
+    m_HandCardLayer->setAnchorPoint(Vec2(0, 0));
+    this->addChild(m_HandCardLayer,HandCardLayerTag);
+    
+    for(int i=0;i<m_MyCard.size();i++){
+        m_MyCard[i]->setPosition(Vec2(-10000, -10000));
+        m_HandCardLayer->addChild(m_MyCard[i]);
+        
+    }
+}
+
+
 
 #pragma mark ***********菜单层相关***********
 
