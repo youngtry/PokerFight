@@ -35,6 +35,8 @@ GameLayer::GameLayer()
 ,m_TopInfoPanel(NULL)
 ,m_LordIndex(-1)
 ,m_DealIndex(0)
+,m_Nickname(NULL)
+,m_Gold(NULL)
 {
     m_LeftCard.clear();
     m_MyCard.clear();
@@ -102,6 +104,7 @@ void GameLayer::changeToGameState(GameState state){
     
     if(state == GameDealCard){
         createHanderLayer();
+        createInfoLayer();
         DealCards();
         return;
     }
@@ -266,12 +269,9 @@ void GameLayer::showStory(){
             m_StoryLayer->removeAllChildren();
             GameLayer::changeToGameState(GameDealCard);
         });
-        
-        
-        
+
         m_StoryLayer->runAction(Sequence::create(move,func, NULL));
-        
-        
+
     }else{
         Point pos  = Vec2(m_winSize.width*0.1, m_winSize.height*((float)(0.8/(float)size)*m_StoryInfo.size()));
         
@@ -297,6 +297,54 @@ void GameLayer::showStory(){
     
     
 }
+#pragma mark ***********信息层相关***********
+void GameLayer::createInfoLayer(){
+    m_InfoLayer = Layer::create();
+    m_InfoLayer->setPosition(Vec2(0, 0));
+    m_InfoLayer->setContentSize(Size(m_winSize.width, m_winSize.height));
+    m_InfoLayer->setAnchorPoint(Vec2(0, 0));
+    this->addChild(m_InfoLayer,InfoLayerTag);
+    
+    m_TopInfoPanel = Sprite::create("infolayer/gameUpPanel.png");
+    m_TopInfoPanel->setPosition(Vec2(0, -m_TopInfoPanel->getContentSize().height));
+    m_TopInfoPanel->setAnchorPoint(Vec2(0, 1));
+    m_InfoLayer->addChild(m_TopInfoPanel);
+    
+    Sprite* buttominfo = Sprite::create("infolayer/bottom_infobar_bg.png");
+    buttominfo->setPosition(Vec2(0, 0));
+    buttominfo->setAnchorPoint(Vec2(0,0));
+    m_InfoLayer->addChild(buttominfo);
+    buttominfo->setName("BottomInfoBar");
+    
+    Label* namelabel = Label::createWithSystemFont(getString("Name"), "Arial", 20);
+    namelabel->setPosition(Vec2(buttominfo->getContentSize().width*0.1, buttominfo->getContentSize().height/2));
+    buttominfo->addChild(namelabel);
+    
+    m_Nickname = Label::createWithSystemFont(GameData::getInstance()->getPlayerName().c_str(), "Arial",20);
+    m_Nickname->setPosition(Vec2(buttominfo->getContentSize().width*0.14, buttominfo->getContentSize().height/2));
+    m_Nickname->setAnchorPoint(Vec2(0, 0.5));
+    buttominfo->addChild(m_Nickname);
+    
+    Sprite* goldicon = Sprite::create("infolayer/bottom_infobar_jj_gold_big.png");
+    goldicon->setPosition(Vec2(buttominfo->getContentSize().width*0.4, buttominfo->getContentSize().height/2));
+    buttominfo->addChild(goldicon);
+    
+    m_Gold = Label::createWithSystemFont(__String::createWithFormat("%d",GameData::getInstance()->getPlayerGold())->getCString(), "Arial",20);
+    m_Gold->setPosition(Vec2(buttominfo->getContentSize().width*0.42, buttominfo->getContentSize().height/2));
+    m_Gold->setAnchorPoint(Vec2(0, 0.5));
+    buttominfo->addChild(m_Gold);
+
+}
+
+void GameLayer::showBaseInfo(){
+    MoveTo* move = MoveTo::create(0.5, Vec2(0, 0));
+    m_TopInfoPanel->runAction(move);
+}
+
+void GameLayer::showLordCard(){
+    
+}
+
 #pragma mark ***********手牌层相关***********
 void GameLayer::createHanderLayer(){
     

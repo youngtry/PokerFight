@@ -16,6 +16,7 @@ typedef enum
 {
     BackeGroundTag=1,
     PlayerLayerTag,
+    InfoLayerTag,
     StoryLayerTag,
     MenuLayerTag,
     HandCardLayerTag,
@@ -63,6 +64,12 @@ public:
     void createStoryLayer();
     void showStory();
     
+    /*************信息层*************/
+    void createInfoLayer();
+    void showBaseInfo();            //显示基本信息
+    void showLordCard();           //显示地主牌和动画
+    
+    
     /*************手牌层*************/
     void createHanderLayer();
     
@@ -86,6 +93,7 @@ public:
     /*************流程相关*************/
     void changeToGameState(GameState state);    //切换流程
     void DealCards();       //发牌
+    
     
     /*************理牌调整相关*************/
     void adjustCards();
@@ -119,6 +127,8 @@ private:
     //信息层
     Layer* m_InfoLayer;
     Sprite* m_TopInfoPanel;
+    Label* m_Nickname;
+    Label* m_Gold;
     Label* m_Time;
     
     //人物层

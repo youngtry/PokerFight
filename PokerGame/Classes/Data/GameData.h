@@ -22,6 +22,11 @@ public:
     
     bool init();
     
+    void setPlayerName(std::string  name);
+    std::string getPlayerName();
+    int getPlayerGold();
+    void setPlayerGold(int gold);
+    
     std::vector<std::string > StoryInfo;
     int StoryCount;
     
