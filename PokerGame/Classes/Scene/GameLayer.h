@@ -27,8 +27,8 @@ typedef enum {
     GameReady,         //准备状态
     GameDealCard,   //发牌
     GameCallScore,  //叫分
+    GameGetLord,    //获得地主
     GameDouble,      //加倍
-    GameGetLord,    //抢地主
     GamePlay,           //打牌
     GameOver,          //结束
 }GameState;
@@ -93,7 +93,9 @@ public:
     /*************流程相关*************/
     void changeToGameState(GameState state);    //切换流程
     void DealCards();       //发牌
-    
+    void CallScore(int score);
+    void CallDouble();
+    void GetLord();
     
     /*************理牌调整相关*************/
     void adjustCards();

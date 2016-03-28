@@ -85,6 +85,8 @@ bool GameLayer::init(){
     m_RightCard = MakeCard::getInstance()->m_RightCard;
     m_LordCard = MakeCard::getInstance()->m_LordCard;
     
+    
+    
     string a = getString("ShowText");
     log("showText = %s",a.c_str());
     
@@ -108,6 +110,20 @@ void GameLayer::changeToGameState(GameState state){
         DealCards();
         return;
     }
+    if(state == GameCallScore){
+        CallScore(0);
+        return;
+    }
+    
+    if(state == GameDouble){
+        CallDouble();
+        return;
+    }
+    
+    if(state == GameGetLord){
+        GetLord();
+        return;
+    }
 }
 
 void GameLayer::DealCards(){
@@ -120,9 +136,108 @@ void GameLayer::DealCards(){
         }
         m_DealIndex++;
         log("m_DealIndex = %d",m_DealIndex);
+        if(m_DealIndex == 17){
+            GameLayer::showBaseInfo();
+        }
     },0.1f, CC_REPEAT_FOREVER, 0.0f, "DealCard");
     
     
+}
+
+void GameLayer::CallScore(int score){
+}
+
+void GameLayer::GetLord(){
+    Sprite* spr1 = (Sprite*)m_InfoLayer->getChildByName("Lord1");
+    Sprite* spr2 = (Sprite*)m_InfoLayer->getChildByName("Lord2");
+    Sprite* spr3 = (Sprite*)m_InfoLayer->getChildByName("Lord3");
+    
+    __String* str1;
+    Animation* animation1 = Animation::create();
+    for(int i=1;i<7;i++){
+        str1 = __String::createWithFormat("Card/lordcard/lordlz_lzbottom_frame_%d.png",i);
+        animation1->addSpriteFrameWithFile(str1->getCString());
+    }
+    
+    animation1->setDelayPerUnit(0.1f);
+    Animate* animate1 = Animate::create(animation1);
+    CallFunc* func1 = CallFunc::create([=]{
+        spr1->setVisible(false);
+        if(m_LordCard[0]){
+            m_LordCard[0]->setPosition(Vec2(m_winSize.width/2-m_LordCard[0]->getCardSize().width*1.5-5, m_winSize.height*0.6));
+        }
+    });
+    spr1->runAction(Sequence::create(animate1,func1, NULL));
+    
+    __String* str2;
+    Animation* animation2 = Animation::create();
+    for(int i=1;i<7;i++){
+        str2 = __String::createWithFormat("Card/lordcard/lordlz_lzbottom_frame_%d.png",i);
+        animation2->addSpriteFrameWithFile(str2->getCString());
+    }
+    
+    animation2->setDelayPerUnit(0.1f);
+    Animate* animate2 = Animate::create(animation2);
+    CallFunc* func2 = CallFunc::create([=]{
+        spr2->setVisible(false);
+        if(m_LordCard[1]){
+            m_LordCard[1]->setPosition(Vec2(m_winSize.width/2-m_LordCard[1]->getCardSize().width/2, m_winSize.height*0.6));
+            
+        }
+    });
+    spr2->runAction(Sequence::create(animate2,func2, NULL));
+    
+    __String* str3;
+    Animation* animation3 = Animation::create();
+    for(int i=1;i<7;i++){
+        str3 = __String::createWithFormat("Card/lordcard/lordlz_lzbottom_frame_%d.png",i);
+        animation3->addSpriteFrameWithFile(str3->getCString());
+    }
+    
+    animation3->setDelayPerUnit(0.1f);
+    Animate* animate3 = Animate::create(animation3);
+    CallFunc* func3 = CallFunc::create([=]{
+        spr3->setVisible(false);
+        if(m_LordCard[2]){
+            m_LordCard[2]->setPosition(Vec2(m_winSize.width/2+m_LordCard[2]->getCardSize().width/2+5, m_winSize.height*0.6));
+        }
+    });
+    spr3->runAction(Sequence::create(animate3,func3, NULL));
+    
+    switch (m_LordIndex) {
+        case 0:
+        {
+            for(int i=0;i<m_LordCard.size();i++){
+                PokerCard* card = PokerCard::createPokerCard(m_LordCard[i]->getNumber(), m_LordCard[i]->getColor());
+                m_LeftCard.push_back(card);
+            }
+        }
+            break;
+        case 1:
+        {
+            for(int i=0;i<m_LordCard.size();i++){
+                PokerCard* card = PokerCard::createPokerCard(m_LordCard[i]->getNumber(), m_LordCard[i]->getColor());
+                m_MyCard.push_back(card);
+            }
+        }
+            break;
+        case 2:
+        {
+            for(int i=0;i<m_LordCard.size();i++){
+                PokerCard* card = PokerCard::createPokerCard(m_LordCard[i]->getNumber(), m_LordCard[i]->getColor());
+                m_RightCard.push_back(card);
+            }
+        }
+            break;
+        default:
+            break;
+    }
+    
+    showLeftCardNumber();
+    
+}
+
+void GameLayer::CallDouble(){
 }
 #pragma mark ***********理牌调整相关***********
 void GameLayer::adjustCards(){
@@ -157,7 +272,13 @@ void GameLayer::adjustCards(){
 }
 
 void GameLayer::showLeftCardNumber(){
+    m_LeftCardNumber[0] = (int)m_LeftCard.size();
+    m_LeftCardNumber[1] = (int)m_MyCard.size();
+    m_LeftCardNumber[2] = (int)m_RightCard.size();
     
+    for(int i=0;i<3;i++){
+        m_LeftCardNumberLabel[i]->setString(__String::createWithFormat("%d",m_LeftCardNumber[i])->getCString());
+    }
 }
 
 #pragma mark ***********背景层相关***********
@@ -306,7 +427,7 @@ void GameLayer::createInfoLayer(){
     this->addChild(m_InfoLayer,InfoLayerTag);
     
     m_TopInfoPanel = Sprite::create("infolayer/gameUpPanel.png");
-    m_TopInfoPanel->setPosition(Vec2(0, -m_TopInfoPanel->getContentSize().height));
+    m_TopInfoPanel->setPosition(Vec2(0, m_winSize.height+m_TopInfoPanel->getContentSize().height));
     m_TopInfoPanel->setAnchorPoint(Vec2(0, 1));
     m_InfoLayer->addChild(m_TopInfoPanel);
     
@@ -337,12 +458,44 @@ void GameLayer::createInfoLayer(){
 }
 
 void GameLayer::showBaseInfo(){
-    MoveTo* move = MoveTo::create(0.5, Vec2(0, 0));
-    m_TopInfoPanel->runAction(move);
+    MoveTo* move = MoveTo::create(0.5, Vec2(0, m_winSize.height));
+    CallFunc* func = CallFunc::create([=]{
+        GameLayer::showLordCard();
+    });
+    m_TopInfoPanel->runAction(Sequence::create(move,func, NULL));
 }
 
 void GameLayer::showLordCard(){
     
+    for(int i=0;i<m_LordCard.size();i++){
+        m_LordCard[i]->setPosition(Vec2(-10000, -10000));
+        m_InfoLayer->addChild(m_LordCard[i]);
+        m_LordCard[i]->setScale(0.8);
+    }
+    
+    
+    Sprite* lord1 = Sprite::create("Card/lordcard/lordlz_lzbottom_frame_1.png");
+    lord1->setPosition(Vec2(m_winSize.width*0.5-lord1->getContentSize().width-5, m_winSize.height*0.7));
+    m_InfoLayer->addChild(lord1);
+    lord1->setName("Lord1");
+    
+    Sprite* lord2 = Sprite::create("Card/lordcard/lordlz_lzbottom_frame_1.png");
+    lord2->setPosition(Vec2(m_winSize.width*0.5, m_winSize.height*0.7));
+    m_InfoLayer->addChild(lord2);
+    lord2->setName("Lord2");
+    
+    Sprite* lord3 = Sprite::create("Card/lordcard/lordlz_lzbottom_frame_1.png");
+    lord3->setPosition(Vec2(m_winSize.width*0.5+lord3->getContentSize().width+5, m_winSize.height*0.7));
+    m_InfoLayer->addChild(lord3);
+    lord3->setName("Lord3");
+    
+    if(m_LordIndex != -1){
+        //选定了地主
+        changeToGameState(GameGetLord);
+    }else{
+        //叫分
+        changeToGameState(GameCallScore);
+    }
 }
 
 #pragma mark ***********手牌层相关***********

@@ -17,6 +17,7 @@ PokerCard::PokerCard(int number,PokerColor color,int size){
     m_CardSize.width = 0;
     m_CardSize.height = 0;
     initCard();
+    setAnchorPoint(Vec2(0, 0));
 }
 
 PokerCard::PokerCard(){
@@ -45,11 +46,11 @@ bool PokerCard::init(){
 void PokerCard::initCard(){
     this->removeAllChildrenWithCleanup(true);
     if(m_Number == 14){
-        m_Card = Sprite::create(__String::createWithFormat("Card/%d.png",m_Number)->getCString());
+        m_Card = Sprite::create(__String::createWithFormat("Card/%d/%d.png",m_Size,m_Number)->getCString());
     }else if(m_Number == 15){
-        m_Card = Sprite::create(__String::createWithFormat("Card/%d.png",m_Number)->getCString());
+        m_Card = Sprite::create(__String::createWithFormat("Card/%d/%d.png",m_Size,m_Number)->getCString());
     }else{
-        m_Card = Sprite::create(__String::createWithFormat("Card/%d_%d.png",m_Number,m_Color)->getCString());
+        m_Card = Sprite::create(__String::createWithFormat("Card/%d/%d_%d.png",m_Size,m_Number,m_Color)->getCString());
     }
     
     m_Card->setPosition(Vec2(0, 0));
