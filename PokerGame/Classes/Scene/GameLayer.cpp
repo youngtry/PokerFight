@@ -37,15 +37,19 @@ GameLayer::GameLayer()
 ,m_DealIndex(0)
 ,m_Nickname(NULL)
 ,m_Gold(NULL)
+,m_Beishu(NULL)
+,m_DiFen(NULL)
 {
     m_LeftCard.clear();
     m_MyCard.clear();
     m_RightCard.clear();
     m_LordCard.clear();
     m_StoryInfo.clear();
+    m_TopLordCard.clear();
     for(int i=0;i<3;i++){
         m_LeftCardNumber[i] = 0;
         m_LeftCardNumberLabel[i] = NULL;
+        
     }
 }
 
@@ -165,6 +169,18 @@ void GameLayer::GetLord(){
         spr1->setVisible(false);
         if(m_LordCard[0]){
             m_LordCard[0]->setPosition(Vec2(m_winSize.width/2-m_LordCard[0]->getCardSize().width*1.5-5, m_winSize.height*0.6));
+            MoveTo* move1 = MoveTo::create(0.5, Vec2(m_winSize.width/2, m_winSize.height*0.9));
+            ScaleTo* scale1 = ScaleTo::create(0.5, 0.3);
+            
+            CallFunc* func = CallFunc::create([=]{
+                m_LordCard[0]->setVisible(false);
+                if(m_TopLordCard[0])
+                {
+                    m_TopLordCard[0]->setVisible(true);
+                }
+            });
+            
+            m_LordCard[0]->runAction(Sequence::create(Spawn::create(move1,scale1, NULL),func, NULL));
         }
     });
     spr1->runAction(Sequence::create(animate1,func1, NULL));
@@ -182,6 +198,18 @@ void GameLayer::GetLord(){
         spr2->setVisible(false);
         if(m_LordCard[1]){
             m_LordCard[1]->setPosition(Vec2(m_winSize.width/2-m_LordCard[1]->getCardSize().width/2, m_winSize.height*0.6));
+            MoveTo* move1 = MoveTo::create(0.5, Vec2(m_winSize.width/2, m_winSize.height*0.9));
+            ScaleTo* scale1 = ScaleTo::create(0.5, 0.3);
+            
+            CallFunc* func = CallFunc::create([=]{
+                m_LordCard[1]->setVisible(false);
+                if(m_TopLordCard[1])
+                {
+                    m_TopLordCard[1]->setVisible(true);
+                }
+            });
+            
+            m_LordCard[1]->runAction(Sequence::create(Spawn::create(move1,scale1, NULL),func, NULL));
             
         }
     });
@@ -200,6 +228,18 @@ void GameLayer::GetLord(){
         spr3->setVisible(false);
         if(m_LordCard[2]){
             m_LordCard[2]->setPosition(Vec2(m_winSize.width/2+m_LordCard[2]->getCardSize().width/2+5, m_winSize.height*0.6));
+            MoveTo* move1 = MoveTo::create(0.5, Vec2(m_winSize.width/2, m_winSize.height*0.9));
+            ScaleTo* scale1 = ScaleTo::create(0.5, 0.3);
+            
+            CallFunc* func = CallFunc::create([=]{
+                m_LordCard[2]->setVisible(false);
+                if(m_TopLordCard[2])
+                {
+                    m_TopLordCard[2]->setVisible(true);
+                }
+            });
+            
+            m_LordCard[2]->runAction(Sequence::create(Spawn::create(move1,scale1, NULL),func, NULL));
         }
     });
     spr3->runAction(Sequence::create(animate3,func3, NULL));
@@ -209,6 +249,8 @@ void GameLayer::GetLord(){
         {
             for(int i=0;i<m_LordCard.size();i++){
                 PokerCard* card = PokerCard::createPokerCard(m_LordCard[i]->getNumber(), m_LordCard[i]->getColor());
+                card->setPosition(Vec2(-10000, -10000));
+                m_HandCardLayer->addChild(card);
                 m_LeftCard.push_back(card);
             }
         }
@@ -217,6 +259,8 @@ void GameLayer::GetLord(){
         {
             for(int i=0;i<m_LordCard.size();i++){
                 PokerCard* card = PokerCard::createPokerCard(m_LordCard[i]->getNumber(), m_LordCard[i]->getColor());
+                card->setPosition(Vec2(-10000, -10000));
+                m_HandCardLayer->addChild(card);
                 m_MyCard.push_back(card);
             }
         }
@@ -225,6 +269,8 @@ void GameLayer::GetLord(){
         {
             for(int i=0;i<m_LordCard.size();i++){
                 PokerCard* card = PokerCard::createPokerCard(m_LordCard[i]->getNumber(), m_LordCard[i]->getColor());
+                card->setPosition(Vec2(-10000, -10000));
+                m_HandCardLayer->addChild(card);
                 m_RightCard.push_back(card);
             }
         }
@@ -233,7 +279,18 @@ void GameLayer::GetLord(){
             break;
     }
     
-    showLeftCardNumber();
+    CallFunc* act1 = CallFunc::create([=]{
+        m_DealIndex = (int)m_MyCard.size()-1;
+        GameLayer::adjustCards();
+        GameLayer::showLeftCardNumber();
+        if(m_LeftCardNumberLabel[m_LordIndex]){
+            ScaleTo* scale1 = ScaleTo::create(0.5, 2);
+            ScaleTo* scale2 = ScaleTo::create(0.5, 1);
+            m_LeftCardNumberLabel[m_LordIndex]->runAction(Sequence::create(scale1,scale2, NULL));
+        }
+    });
+    
+    this->runAction(Sequence::create(DelayTime::create(0.7),act1, NULL));
     
 }
 
@@ -241,7 +298,7 @@ void GameLayer::CallDouble(){
 }
 #pragma mark ***********理牌调整相关***********
 void GameLayer::adjustCards(){
-    if(m_DealIndex == 17){
+    if(m_DealIndex == m_MyCard.size()){
         unschedule("DealCard");
         return;
     }
@@ -430,6 +487,24 @@ void GameLayer::createInfoLayer(){
     m_TopInfoPanel->setPosition(Vec2(0, m_winSize.height+m_TopInfoPanel->getContentSize().height));
     m_TopInfoPanel->setAnchorPoint(Vec2(0, 1));
     m_InfoLayer->addChild(m_TopInfoPanel);
+    
+    Sprite* lordbg = Sprite::create("infolayer/gameLordPanel.png");
+    lordbg->setPosition(Vec2(m_TopInfoPanel->getContentSize().width/2, m_TopInfoPanel->getContentSize().height));
+    lordbg->setAnchorPoint(Vec2(0.5, 1));
+    m_TopInfoPanel->addChild(lordbg);
+    
+    if(m_LordCard.size() == 3){
+        for(int i=0;i<m_LordCard.size();i++){
+            PokerCard* card = PokerCard::createPokerCard(m_LordCard[i]->getNumber(), m_LordCard[i]->getColor(),2);
+            m_TopLordCard.push_back(card);
+            card->setPosition(Vec2(m_TopInfoPanel->getContentSize().width/2+(i-1)*card->getCardSize().width*1.0f+(i-1)*5-card->getCardSize().width/2, m_TopInfoPanel->getContentSize().height*0.6));
+            m_TopInfoPanel->addChild(card);
+            card->setVisible(false);
+        } 
+    }
+    
+    
+    
     
     Sprite* buttominfo = Sprite::create("infolayer/bottom_infobar_bg.png");
     buttominfo->setPosition(Vec2(0, 0));

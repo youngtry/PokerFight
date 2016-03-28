@@ -70,6 +70,7 @@ void MakeCard::createPlayersCard(){
             PokerCard* card = PokerCard::createPokerCard(m_AllCard[index]->getNumber(), m_AllCard[index]->getColor());
             temp.push_back(card);
             m_AllCard.erase(itr+index);
+            CCLOG("m_AllCard.size = %lu",m_AllCard.size());
         }
     }
     
@@ -124,7 +125,7 @@ void MakeCard::createPlayersCard(){
     }
     
     //地主牌
-    for(int i=51-(int)m_RightCard.size()-(int)m_MyCard.size()-(int)m_RightCard.size();i<m_AllCard.size();i++){
+    for(int i=51-(int)m_LeftCardData.size()-(int)m_MyCardData.size()-(int)m_RightCardData.size();i<m_AllCard.size();i++){
         PokerCard* card = PokerCard::createPokerCard(m_AllCard[i]->getNumber(), m_AllCard[i]->getColor());
         m_LordCard.push_back(card);
     }

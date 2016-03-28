@@ -132,6 +132,9 @@ private:
     Label* m_Nickname;
     Label* m_Gold;
     Label* m_Time;
+    Label* m_DiFen;
+    Label* m_Beishu;
+    std::vector<PokerCard* > m_TopLordCard; 
     
     //人物层
     Layer* m_PlayerLayer;
