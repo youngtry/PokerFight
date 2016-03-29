@@ -47,10 +47,21 @@ void PokerCard::initCard(){
     this->removeAllChildrenWithCleanup(true);
     if(m_Number == 14){
         m_Card = Sprite::create(__String::createWithFormat("Card/%d/%d.png",m_Size,m_Number)->getCString());
+        m_Color = COLOR_XIAOWANG;
+        m_Value = 16;
     }else if(m_Number == 15){
         m_Card = Sprite::create(__String::createWithFormat("Card/%d/%d.png",m_Size,m_Number)->getCString());
+        m_Color = COLOR_DAWANG;
+        m_Value = 17;
     }else{
         m_Card = Sprite::create(__String::createWithFormat("Card/%d/%d_%d.png",m_Size,m_Number,m_Color)->getCString());
+        if(m_Number == 1){
+            m_Value = 14;
+        }else if (m_Number == 2){
+            m_Value = 15;
+        }else{
+            m_Value = m_Number;
+        }
     }
     
     m_Card->setPosition(Vec2(0, 0));

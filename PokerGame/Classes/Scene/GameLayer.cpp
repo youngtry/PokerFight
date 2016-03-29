@@ -39,6 +39,8 @@ GameLayer::GameLayer()
 ,m_Gold(NULL)
 ,m_Beishu(NULL)
 ,m_DiFen(NULL)
+,m_TableLayer(NULL)
+,m_Clock(NULL)
 {
     m_LeftCard.clear();
     m_MyCard.clear();
@@ -89,10 +91,18 @@ bool GameLayer::init(){
     m_RightCard = MakeCard::getInstance()->m_RightCard;
     m_LordCard = MakeCard::getInstance()->m_LordCard;
     
-    
-    
     string a = getString("ShowText");
     log("showText = %s",a.c_str());
+    
+    
+    EventDispatcher* dispatcher = Director::getInstance()->getEventDispatcher();
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->onTouchBegan = CC_CALLBACK_2(GameLayer::onTouchBegan, this);
+    listener->onTouchMoved = CC_CALLBACK_2(GameLayer::onTouchMoved, this);
+    listener->onTouchCancelled = CC_CALLBACK_2(GameLayer::onTouchCancelled, this);
+    listener->onTouchEnded = CC_CALLBACK_2(GameLayer::onTouchEnded, this);
+    
+    dispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     
     changeToGameState(GameReady);
     return true;
@@ -252,7 +262,9 @@ void GameLayer::GetLord(){
                 card->setPosition(Vec2(-10000, -10000));
                 m_HandCardLayer->addChild(card);
                 m_LeftCard.push_back(card);
+                
             }
+            MakeCard::getInstance()->sequenceCards(m_LeftCard);
         }
             break;
         case 1:
@@ -263,6 +275,8 @@ void GameLayer::GetLord(){
                 m_HandCardLayer->addChild(card);
                 m_MyCard.push_back(card);
             }
+            MakeCard::getInstance()->sequenceCards(m_MyCard);
+            GameLayer::setOrder(m_MyCard);
         }
             break;
         case 2:
@@ -273,6 +287,7 @@ void GameLayer::GetLord(){
                 m_HandCardLayer->addChild(card);
                 m_RightCard.push_back(card);
             }
+            MakeCard::getInstance()->sequenceCards(m_RightCard);
         }
             break;
         default:
@@ -288,6 +303,8 @@ void GameLayer::GetLord(){
             ScaleTo* scale2 = ScaleTo::create(0.5, 1);
             m_LeftCardNumberLabel[m_LordIndex]->runAction(Sequence::create(scale1,scale2, NULL));
         }
+        
+        changeToGameState(GameDouble);
     });
     
     this->runAction(Sequence::create(DelayTime::create(0.7),act1, NULL));
@@ -295,6 +312,33 @@ void GameLayer::GetLord(){
 }
 
 void GameLayer::CallDouble(){
+    
+}
+#pragma mark ***********牌桌相关***********
+void GameLayer::createTableLayer(){
+    m_TableLayer = Layer::create();
+    m_TableLayer->setPosition(Vec2(0, 0));
+    m_TableLayer->setContentSize(Size(m_winSize.width, m_winSize.height));
+    m_TableLayer->setAnchorPoint(Vec2(0, 0));
+    this->addChild(m_TableLayer,TableLayerTag);
+    
+}
+
+void GameLayer::showClock(int time,int seat){
+    
+}
+
+void GameLayer::hideClock(){
+    
+}
+
+#pragma mark ***********调整相关***********
+void GameLayer::setOrder(std::vector<PokerCard *> &card){
+    for(int i=0;i<card.size();i++){
+        if(card[i]->getParent() != NULL){
+            card[i]->setLocalZOrder(i+1);
+        }
+    }
 }
 #pragma mark ***********理牌调整相关***********
 void GameLayer::adjustCards(){
@@ -442,7 +486,7 @@ void GameLayer::showStory(){
     if(m_StoryInfo.size() == 0){
         //进入下一阶段
         m_StoryLayer->stopAllActions();
-        MoveTo* move = MoveTo::create(1.0, Vec2(0, m_winSize.height));
+        MoveTo* move = MoveTo::create(0.5, Vec2(0, m_winSize.height));
         CallFunc* func = CallFunc::create([=]{
             m_StoryLayer->removeAllChildren();
             GameLayer::changeToGameState(GameDealCard);
@@ -461,13 +505,13 @@ void GameLayer::showStory(){
             fontpath = "font/songti.TTF";
         }
         
-        Label* storytext = Label::createWithTTF(story.c_str(), fontpath.c_str(), 30);
+        Label* storytext = Label::createWithSystemFont(story.c_str(), "Arial", 30);
         storytext->setColor(Color3B::WHITE);
         storytext->setPosition(pos);
         storytext->setAnchorPoint(Vec2(0, 0.5));
         m_StoryLayer->addChild(storytext);
         
-        DelayTime* time = DelayTime::create(2.0f);
+        DelayTime* time = DelayTime::create(1.0f);
         CallFunc* func = CallFunc::create(CC_CALLBACK_0(GameLayer::showStory, this));
         m_StoryLayer->runAction(Sequence::create(time,func,NULL));
         
@@ -743,6 +787,37 @@ void GameLayer::DoubleCallBack(int tag){
 void GameLayer::AutoPlayCallBack(){
     
 }
+
+#pragma mark ***********触摸相关***********
+bool GameLayer:: onTouchBegan(Touch *touch, Event *unused_event){
+    if(m_StoryLayer->getPosition().y < m_winSize.height){
+        m_StoryLayer->stopAllActions();
+        m_StoryLayer->removeAllChildren();
+        m_StoryLayer->setPositionY(m_winSize.height);
+        changeToGameState(GameDealCard);
+        return false;
+    }
+    for(int i=0;i<m_MyCard.size();i++){
+        PokerCard* card = *(m_MyCard.begin()+i);
+        Point pos =card->convertTouchToNodeSpace(touch);
+        Rect rect;
+        if(i<m_MyCard.size()-1){
+            rect = Rect(0, 0, (*(m_MyCard.begin()+i+1))->getPosition().x-card->getPosition().x, card->getCardSize().height);
+        }else{
+            rect = Rect(0, 0, card->getCardSize().width, card->getCardSize().height);
+        }
+        
+        if(rect.containsPoint(pos)){
+            CCLOG("pos.x = %f,pos.y = %f",pos.x,pos.y);
+            return true;
+        }
+    }
+    return true;
+}
+void GameLayer::onTouchMoved(Touch *touch, Event *unused_event){}
+void GameLayer::onTouchEnded(Touch *touch, Event *unused_event){}
+void GameLayer::onTouchCancelled(Touch *touch, Event *unused_event){}
+
 
 
 

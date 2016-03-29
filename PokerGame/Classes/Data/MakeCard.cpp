@@ -129,6 +129,10 @@ void MakeCard::createPlayersCard(){
         PokerCard* card = PokerCard::createPokerCard(m_AllCard[i]->getNumber(), m_AllCard[i]->getColor());
         m_LordCard.push_back(card);
     }
+    
+    sequenceCards(m_MyCard);
+    sequenceCards(m_LeftCard);
+    sequenceCards(m_RightCard);
 
 }
 
@@ -158,6 +162,18 @@ bool MakeCard::removeCardFromAll(int number,PokerColor color){
     }
     
     return false;
+}
+
+void MakeCard::sequenceCards(std::vector<PokerCard *> &card){
+    for(int i=0;i<card.size();i++){
+        for(int j=0;j<card.size()-i-1;j++){
+            if(card[j]->getValue()<card[j+1]->getValue()){
+                PokerCard* card1 = card[j];
+                card[j] = card[j+1];
+                card[j+1] = card1;
+            }
+        }
+    }
 }
 
 

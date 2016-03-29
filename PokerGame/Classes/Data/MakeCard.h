@@ -29,7 +29,7 @@ public:
     bool removeCardFromAll(int number,PokerColor color);
     
     void createPlayersCard();
-    
+    void sequenceCards(std::vector<PokerCard* > &card);
     std::vector<PokerCard* > m_AllCard;
     std::vector<PokerCard* > m_LeftCard;
     std::vector<PokerCard* > m_MyCard;

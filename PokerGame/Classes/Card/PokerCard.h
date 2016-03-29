@@ -40,6 +40,7 @@ public:
     
     int getNumber() {return m_Number;};
     PokerColor getColor(){return m_Color;};
+    int getValue(){return m_Value;};
     
 private:
     

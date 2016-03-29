@@ -17,6 +17,7 @@ typedef enum
     BackeGroundTag=1,
     PlayerLayerTag,
     InfoLayerTag,
+    TableLayerTag,
     StoryLayerTag,
     MenuLayerTag,
     HandCardLayerTag,
@@ -34,6 +35,7 @@ typedef enum {
 }GameState;
 
 #define HeadNumber 5    //头像图片数目
+#define CloclkTime  15      //倒计时
 
 
 class PokerCard;
@@ -97,9 +99,26 @@ public:
     void CallDouble();
     void GetLord();
     
+    
+    
     /*************理牌调整相关*************/
     void adjustCards();
     void showLeftCardNumber();
+    
+    /*************调整相关*************/
+    void setOrder(std::vector<PokerCard* > &card);
+    
+     /*************牌桌相关*************/
+    void createTableLayer();
+    void showClock(int time,int seat);
+    void hideClock();
+    
+    /*************触摸相关*************/
+    virtual bool onTouchBegan(Touch *touch, Event *unused_event);
+    virtual void onTouchMoved(Touch *touch, Event *unused_event);
+    virtual void onTouchEnded(Touch *touch, Event *unused_event);
+    virtual void onTouchCancelled(Touch *touch, Event *unused_event);
+
     
     CREATE_FUNC(GameLayer);
     
@@ -122,6 +141,10 @@ private:
     
     //出牌层
     Layer* m_OutCardLayer;
+    
+    //牌桌层
+    Layer* m_TableLayer;
+    Sprite* m_Clock;
     
     //特效层
     Layer* m_AnimLayer;
