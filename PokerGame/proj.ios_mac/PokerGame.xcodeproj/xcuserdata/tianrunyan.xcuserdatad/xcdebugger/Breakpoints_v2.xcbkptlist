@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../Classes/Scene/GameLayer.cpp"
-            timestampString = "480910284.215535"
+            timestampString = "481013200.228012"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "357"
-            endingLineNumber = "357"
-            landmarkName = "GameLayer::showLeftCardNumber()"
+            startingLineNumber = "568"
+            endingLineNumber = "568"
+            landmarkName = "GameLayer::adjustCards()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

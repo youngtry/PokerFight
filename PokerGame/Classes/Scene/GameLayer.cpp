@@ -41,6 +41,9 @@ GameLayer::GameLayer()
 ,m_DiFen(NULL)
 ,m_TableLayer(NULL)
 ,m_Clock(NULL)
+,m_ClockNum(NULL)
+,m_GameState(GameNull)
+,m_CurrPlayer(-1)
 {
     m_LeftCard.clear();
     m_MyCard.clear();
@@ -51,7 +54,7 @@ GameLayer::GameLayer()
     for(int i=0;i<3;i++){
         m_LeftCardNumber[i] = 0;
         m_LeftCardNumberLabel[i] = NULL;
-        
+        m_PlayerSpeak[i] = NULL;
     }
 }
 
@@ -109,6 +112,7 @@ bool GameLayer::init(){
 }
 #pragma mark ***********流程控制***********
 void GameLayer::changeToGameState(GameState state){
+    m_GameState = state;
     if(state == GameReady){
         //准备状态，铺设基本UI
         createBackground();
@@ -121,21 +125,36 @@ void GameLayer::changeToGameState(GameState state){
     if(state == GameDealCard){
         createHanderLayer();
         createInfoLayer();
+        createTableLayer();
         DealCards();
+        createMenuLayer();
+        hideMenuLayer();
         return;
     }
     if(state == GameCallScore){
         CallScore(0);
         return;
     }
+ 
+    if(state == GameGetLord){
+        GetLord();
+        return;
+    }
     
     if(state == GameDouble){
+        for(int i=0;i<3;i++){
+            if(m_PlayerSpeak[i])
+                m_PlayerSpeak[i]->setVisible(false);
+        }
         CallDouble();
         return;
     }
     
-    if(state == GameGetLord){
-        GetLord();
+    if(state == GamePlay){
+        for(int i=0;i<3;i++){
+            if(m_PlayerSpeak[i])
+                m_PlayerSpeak[i]->setVisible(false);
+        }
         return;
     }
 }
@@ -159,6 +178,14 @@ void GameLayer::DealCards(){
 }
 
 void GameLayer::CallScore(int score){
+    if(m_CurrPlayer == -1){
+        m_CurrPlayer = 0;
+        showClock(CloclkTime, 0);
+    }else if(m_CurrPlayer == 0){
+        m_CurrPlayer = 1;
+        showClock(CloclkTime, 1);
+        showCallScoreMenu(true);
+    }
 }
 
 void GameLayer::GetLord(){
@@ -312,6 +339,134 @@ void GameLayer::GetLord(){
 }
 
 void GameLayer::CallDouble(){
+    if(m_LordIndex == 0 ){
+        if(m_CurrPlayer == -1){
+            //I first
+            m_CurrPlayer = 1;
+            showClock(CloclkTime, 1);
+            showDoubleMenu(true);
+        }else if(m_CurrPlayer == 1){
+            m_CurrPlayer = 2;
+            showClock(CloclkTime, 2);
+        }else{
+            m_CurrPlayer = -1;
+            CallFunc* func = CallFunc::create([=]{
+                GameLayer::changeToGameState(GamePlay);
+                changeToGameState(GamePlay);
+                CCLOG("changeToGameState(GamePlay)");
+            });
+            
+            this->runAction(Sequence::create(DelayTime::create(1),func, NULL));
+            
+        }
+    }else if (m_LordIndex == 1){
+        if(m_CurrPlayer == -1){
+            m_CurrPlayer = 2;
+            showClock(CloclkTime, 2);
+        }else if (m_CurrPlayer ==2){
+            m_CurrPlayer = 0;
+            showClock(CloclkTime, 0);
+        }else{
+            m_CurrPlayer = -1;
+            CallFunc* func = CallFunc::create([=]{
+                GameLayer::changeToGameState(GamePlay);
+                changeToGameState(GamePlay);
+                CCLOG("changeToGameState(GamePlay)");
+            });
+            
+            this->runAction(Sequence::create(DelayTime::create(1),func, NULL));
+        }
+    }else if (m_LordIndex == 2){
+        if(m_CurrPlayer == -1){
+            m_CurrPlayer = 0;
+            showClock(CloclkTime, 0);
+        }else if (m_CurrPlayer ==0){
+            m_CurrPlayer = 1;
+            showClock(CloclkTime, 1);
+            showDoubleMenu(true);
+        }else{
+            m_CurrPlayer = -1;
+            CallFunc* func = CallFunc::create([=]{
+                GameLayer::changeToGameState(GamePlay);
+                changeToGameState(GamePlay);
+                CCLOG("changeToGameState(GamePlay)");
+            });
+            
+            this->runAction(Sequence::create(DelayTime::create(1),func, NULL));
+        }
+    }
+}
+
+void GameLayer::OutTimehandle()
+{
+    if(m_GameState == GameCallScore){
+        ScroeCallBack(0);
+    }else if (m_GameState == GameDouble){
+        DoubleCallBack(0);
+        CallDouble();
+    }else if (m_GameState == GamePlay){
+        //自动出牌
+    }
+}
+
+void GameLayer::ComputerOperation(){
+
+    if(m_GameState == GameCallScore){
+        if(m_CurrPlayer == 0){
+            int score = AutoCallScore();
+            m_PlayerSpeak[0]->setTexture(__String::createWithFormat("speak/lord_speak_%d_call_left.png",score)->getCString());
+            m_PlayerSpeak[0]->setVisible(true);
+            CallScore(score);
+        }else if (m_CurrPlayer == 2){
+            
+        }
+    }else if (m_GameState == GameDouble){
+        bool isdouble = isDouble();
+        if(m_CurrPlayer == 0){
+            if(isdouble){
+                Sprite* doubleicon = Sprite::create("speak/jiabei.png");
+                doubleicon->setPosition(Vec2(m_winSize.width*0.02, m_winSize.height*0.7));
+                m_PlayerLayer->addChild(doubleicon);
+                m_PlayerSpeak[0]->setVisible(true);
+                m_PlayerSpeak[0]->setTexture("speak/lordhl_play_speak_double_left.png");
+            }else{
+                m_PlayerSpeak[0]->setVisible(true);
+                m_PlayerSpeak[0]->setTexture("speak/lordhl_play_speak_no_double_left.png");
+            }
+        }else if (m_CurrPlayer == 2){
+            if(isdouble){
+                Sprite* doubleicon = Sprite::create("speak/jiabei.png");
+                doubleicon->setPosition(Vec2(m_winSize.width*0.96, m_winSize.height*0.7));
+                m_PlayerLayer->addChild(doubleicon);
+                m_PlayerSpeak[2]->setVisible(true);
+                m_PlayerSpeak[2]->setTexture("speak/lordhl_play_speak_double_right.png");
+            }else{
+                m_PlayerSpeak[2]->setVisible(true);
+                m_PlayerSpeak[2]->setTexture("speak/lordhl_play_speak_no_double_right.png");
+            }
+            
+        }
+        
+        CallDouble();
+    }else if (m_GameState == GamePlay){
+        //自动出牌
+        if(m_CurrPlayer == 0){
+            
+        }else if (m_CurrPlayer == 2){
+            
+        }
+    }
+}
+#pragma mark ***********AI相关***********
+bool GameLayer::isDouble(){
+    return true;
+}
+
+int GameLayer::AutoCallScore(){
+    return 1;
+}
+
+void GameLayer::AutoComputerPlay(){
     
 }
 #pragma mark ***********牌桌相关***********
@@ -322,14 +477,78 @@ void GameLayer::createTableLayer(){
     m_TableLayer->setAnchorPoint(Vec2(0, 0));
     this->addChild(m_TableLayer,TableLayerTag);
     
+    m_Clock = Sprite::create("Clock/lord_clock_bg.png");
+    m_Clock->setPosition(-10000, -10000);
+    m_TableLayer->addChild(m_Clock);
+    
+    m_ClockNum = Label::createWithCharMap("Clock/normal_clock_num.png", 23, 32, '0');
+    m_ClockNum->setString("0");
+    m_ClockNum->setPosition(Vec2(m_Clock->getContentSize().width/2, m_Clock->getContentSize().height/2));
+    m_Clock->addChild(m_ClockNum);
+    
 }
 
 void GameLayer::showClock(int time,int seat){
+    Point pos = Vec2(-10000, -10000);
+    switch (seat) {
+        case 0:
+        {
+            pos = Vec2(m_winSize.width*0.2, m_winSize.height*0.82);
+        }
+            break;
+        case 1:
+        {
+            pos = Vec2(m_winSize.width*0.5, m_winSize.height*0.55);
+        }
+            break;
+        case 2:
+        {
+            pos = Vec2(m_winSize.width*0.8, m_winSize.height*0.82);
+        }
+            break;
+            
+        default:
+            break;
+    }
+    
+    m_Clock->setPosition(pos);
+    
+    m_ClockNum->setString(__String::createWithFormat("%d",time)->getCString());
+    
+    schedule([=](float dt){
+        int num = std::atoi(m_ClockNum->getString().c_str());
+        CCLOG("num = %d",num);
+        
+        if(CloclkTime - num == 2){
+            GameLayer::hideClock();
+            GameLayer::ComputerOperation();
+            return;
+        }
+        
+        if(num == 6){
+            m_Clock->setTexture("Clock/lord_clock_red_bg.png");
+            m_ClockNum->setCharMap("Clock/left_clock_num.png",23,32,'0');
+        }
+        if(num == 0){
+            GameLayer::hideClock();
+            if(m_CurrPlayer == 1){
+                GameLayer::OutTimehandle();
+            }
+        }
+        
+        num--;
+        m_ClockNum->setString(__String::createWithFormat("%d",num)->getCString());
+        
+    }, 1.0f, time, 1.0f,"ClockDown");
     
 }
 
 void GameLayer::hideClock(){
-    
+    m_Clock->setTexture("Clock/lord_clock_bg.png");
+    m_ClockNum->setCharMap("Clock/normal_clock_num.png",23,32,'0');
+    m_Clock->setPosition(-10000, -10000);
+    m_ClockNum->setString("0");
+    unschedule("ClockDown");
 }
 
 #pragma mark ***********调整相关***********
@@ -445,6 +664,12 @@ void GameLayer::createPlayersLayer(){
     m_LeftCardNumberLabel[0]->setPosition(Vec2(m_winSize.width*0.17, m_winSize.height*0.9));
     m_PlayerLayer->addChild(m_LeftCardNumberLabel[0]);
     
+    m_PlayerSpeak[0] = Sprite::create("speak/lordhl_play_speak_double_left.png");
+    m_PlayerSpeak[0]->setPosition(Vec2(m_winSize.width*0.17, m_winSize.height*0.87));
+    m_PlayerLayer->addChild(m_PlayerSpeak[0]);
+    m_PlayerSpeak[0]->setAnchorPoint(Vec2(0, 0.5));
+    m_PlayerSpeak[0]->setVisible(false);
+    
     //本家头像
     int myindex = rand()%HeadNumber+1;
     while (myindex == leftindex) {
@@ -457,6 +682,12 @@ void GameLayer::createPlayersLayer(){
     m_LeftCardNumberLabel[1]->setPosition(Vec2(m_winSize.width*0.17, m_winSize.height*0.45));
     m_PlayerLayer->addChild(m_LeftCardNumberLabel[1]);
     
+    m_PlayerSpeak[1] = Sprite::create("speak/lordhl_play_speak_double_left.png");
+    m_PlayerSpeak[1]->setPosition(Vec2(m_winSize.width*0.17, m_winSize.height*0.42));
+    m_PlayerLayer->addChild(m_PlayerSpeak[1]);
+    m_PlayerSpeak[1]->setAnchorPoint(Vec2(0, 0.5));
+    m_PlayerSpeak[1]->setVisible(false);
+    
     //右家头像
     int rightindex = rand()%HeadNumber+1;
     while (rightindex == leftindex || rightindex == myindex) {
@@ -468,6 +699,12 @@ void GameLayer::createPlayersLayer(){
     m_LeftCardNumberLabel[2] = Label::createWithCharMap("playercardnumber.png", 20, 28, '0');
     m_LeftCardNumberLabel[2]->setPosition(Vec2(m_winSize.width*0.83, m_winSize.height*0.9));
     m_PlayerLayer->addChild(m_LeftCardNumberLabel[2]);
+    
+    m_PlayerSpeak[2] = Sprite::create("speak/lordhl_play_speak_double_right.png");
+    m_PlayerSpeak[2]->setPosition(Vec2(m_winSize.width*0.83, m_winSize.height*0.87));
+    m_PlayerLayer->addChild(m_PlayerSpeak[2]);
+    m_PlayerSpeak[2]->setAnchorPoint(Vec2(1, 0.5));
+    m_PlayerSpeak[2]->setVisible(false);
 }
 
 #pragma mark ***********故事层相关***********
@@ -647,7 +884,7 @@ void GameLayer::createMenuLayer(){
     /**********创建打牌菜单**********/
     //要不起
     MenuItem* no_card = MenuItemSprite::create(Sprite::create("Button/playbtn/no_card_n.png"), Sprite::create("Button/playbtn/no_card_p.png"), CC_CALLBACK_0(GameLayer::PlayCallBack, this,-1));
-    no_card->setPosition(Vec2(m_winSize.width/2, m_winSize.height*0.4));
+    no_card->setPosition(Vec2(m_winSize.width/2, m_winSize.height*0.45));
     no_card->setTag(-1);
     
     //不要
@@ -657,9 +894,9 @@ void GameLayer::createMenuLayer(){
     //出牌
     MenuItem* play = MenuItemSprite::create(Sprite::create("Button/playbtn/play_n.png"), Sprite::create("Button/playbtn/play_p.png"), Sprite::create("Button/playbtn/play_d.png"), CC_CALLBACK_0(GameLayer::PlayCallBack, this,2));
     
-    pass->setPosition(Vec2(m_winSize.width/2-tips->getContentSize().width/2-pass->getContentSize().width/2-5, m_winSize.height*0.4));
-    tips->setPosition(Vec2(m_winSize.width/2, m_winSize.height*0.4));
-    play->setPosition(Vec2(m_winSize.width/2+tips->getContentSize().width/2+play->getContentSize().width/2+5, m_winSize.height*0.4));
+    pass->setPosition(Vec2(m_winSize.width/2-tips->getContentSize().width/2-pass->getContentSize().width/2-5, m_winSize.height*0.43));
+    tips->setPosition(Vec2(m_winSize.width/2, m_winSize.height*0.43));
+    play->setPosition(Vec2(m_winSize.width/2+tips->getContentSize().width/2+play->getContentSize().width/2+5, m_winSize.height*0.43));
     
     
     m_PlayMenu = Menu::create(no_card,pass,tips,play, NULL);
@@ -675,10 +912,10 @@ void GameLayer::createMenuLayer(){
     MenuItem* call2 = MenuItemSprite::create(Sprite::create("Button/scorebtn/callscore_2_n.png"), Sprite::create("Button/scorebtn/callscore_2_p.png"), Sprite::create("Button/scorebtn/callscore_2_d.png"), CC_CALLBACK_0(GameLayer::ScroeCallBack, this,2));
     //3分
     MenuItem* call3 = MenuItemSprite::create(Sprite::create("Button/scorebtn/callscore_3_n.png"), Sprite::create("Button/scorebtn/callscore_3_p.png"), CC_CALLBACK_0(GameLayer::ScroeCallBack, this,3));
-    call1->setPosition(Vec2(m_winSize.width/2-2.5-call1->getContentSize().width/2, m_winSize.height*0.4));
-    call0->setPosition(Vec2(call1->getPosition().x-call1->getContentSize().width/2-call0->getContentSize().width/2-5, m_winSize.height*0.4));
-    call2->setPosition(Vec2(m_winSize.width/2+2.5+call2->getContentSize().width/2, m_winSize.height*0.4));
-    call3->setPosition(Vec2(call2->getPosition().x+call2->getContentSize().width/2+call3->getContentSize().width/2+5, m_winSize.height*0.4));
+    call1->setPosition(Vec2(m_winSize.width/2-2.5-call1->getContentSize().width/2, m_winSize.height*0.43));
+    call0->setPosition(Vec2(call1->getPosition().x-call1->getContentSize().width/2-call0->getContentSize().width/2-5, m_winSize.height*0.43));
+    call2->setPosition(Vec2(m_winSize.width/2+2.5+call2->getContentSize().width/2, m_winSize.height*0.43));
+    call3->setPosition(Vec2(call2->getPosition().x+call2->getContentSize().width/2+call3->getContentSize().width/2+5, m_winSize.height*0.43));
     
     m_CallScoreMenu = Menu::create(call0,call1,call2,call3, NULL);
     m_CallScoreMenu->setPosition(Vec2(0, 0));
@@ -690,8 +927,8 @@ void GameLayer::createMenuLayer(){
     
     //不加倍
     MenuItem* _double = MenuItemSprite::create(Sprite::create("Button/doublebtn/double_n.png"), Sprite::create("Button/doublebtn/double_p.png"), CC_CALLBACK_0(GameLayer::DoubleCallBack, this,1));
-    nodouble->setPosition(Vec2(m_winSize.width/2-2.5-nodouble->getContentSize().width/2, m_winSize.height*0.4));
-    _double->setPosition(Vec2(m_winSize.width/2+2.5+_double->getContentSize().width/2, m_winSize.height*0.4));
+    nodouble->setPosition(Vec2(m_winSize.width/2-2.5-nodouble->getContentSize().width/2, m_winSize.height*0.43));
+    _double->setPosition(Vec2(m_winSize.width/2+2.5+_double->getContentSize().width/2, m_winSize.height*0.43));
     
     m_DoubleMenu = Menu::create(nodouble,_double, NULL);
     m_DoubleMenu->setPosition(Vec2(0, 0));
@@ -729,15 +966,19 @@ void GameLayer::removeMenuLayer(){
 void GameLayer::showMenuLayer(){
     if(m_PlayMenu != NULL){
         m_PlayMenu->setEnabled(true);
+        m_PlayMenu->setVisible(true);
     }
     if(m_CallScoreMenu != NULL){
         m_CallScoreMenu->setEnabled(true);
+        m_CallScoreMenu->setVisible(true);
     }
     if(m_DoubleMenu != NULL){
         m_DoubleMenu->setEnabled(true);
+        m_DoubleMenu->setVisible(true);
     }
     if(m_AutoPlayMenu != NULL){
         m_AutoPlayMenu->setEnabled(true);
+        m_AutoPlayMenu->setVisible(false);
     }
     
     m_MenuLayer->setVisible(true);
@@ -746,15 +987,19 @@ void GameLayer::showMenuLayer(){
 void GameLayer::hideMenuLayer(){
     if(m_PlayMenu != NULL){
         m_PlayMenu->setEnabled(false);
+        m_PlayMenu->setVisible(false);
     }
     if(m_CallScoreMenu != NULL){
         m_CallScoreMenu->setEnabled(false);
+        m_CallScoreMenu->setVisible(false);
     }
     if(m_DoubleMenu != NULL){
         m_DoubleMenu->setEnabled(false);
+        m_DoubleMenu->setVisible(false);
     }
     if(m_AutoPlayMenu != NULL){
         m_AutoPlayMenu->setEnabled(false);
+        m_AutoPlayMenu->setVisible(false);
     }
     
     m_MenuLayer->setVisible(false);
@@ -764,9 +1009,21 @@ void GameLayer::showPlayMenu(bool show){
 }
 
 void GameLayer::showCallScoreMenu(bool show){
+    hideMenuLayer();
+    m_MenuLayer->setVisible(show);
+    if(m_CallScoreMenu != NULL){
+        m_CallScoreMenu->setEnabled(show);
+        m_CallScoreMenu->setVisible(show);
+    }
 }
 
 void GameLayer::showDoubleMenu(bool show){
+    hideMenuLayer();
+    m_MenuLayer->setVisible(show);
+    if(m_DoubleMenu != NULL){
+        m_DoubleMenu->setEnabled(show);
+        m_DoubleMenu->setVisible(show);
+    }
 }
 
 void GameLayer::showAutoPlayMenu(bool show){
@@ -782,6 +1039,20 @@ void GameLayer::ScroeCallBack(int tag){
 
 void GameLayer::DoubleCallBack(int tag){
     log("DoubleCallBack ----- tag = %d",tag);
+    hideClock();
+    CallDouble();
+    hideMenuLayer();
+    if(tag == 1){
+        Sprite* doubleicon = Sprite::create("speak/jiabei.png");
+        doubleicon->setPosition(Vec2(m_winSize.width*0.02, m_winSize.height*0.5));
+        m_PlayerLayer->addChild(doubleicon);
+        
+        m_PlayerSpeak[1]->setVisible(true);
+        m_PlayerSpeak[1]->setTexture("speak/lordhl_play_speak_double_left.png");
+    }else{
+        m_PlayerSpeak[1]->setVisible(true);
+        m_PlayerSpeak[1]->setTexture("speak/lordhl_play_speak_no_double_left.png");
+    }
 }
 
 void GameLayer::AutoPlayCallBack(){

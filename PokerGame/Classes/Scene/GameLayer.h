@@ -99,6 +99,8 @@ public:
     void CallDouble();
     void GetLord();
     
+    void OutTimehandle();
+    void ComputerOperation();
     
     
     /*************理牌调整相关*************/
@@ -112,6 +114,10 @@ public:
     void createTableLayer();
     void showClock(int time,int seat);
     void hideClock();
+     /*************AI相关*************/
+    bool isDouble();
+    int AutoCallScore();
+    void AutoComputerPlay();
     
     /*************触摸相关*************/
     virtual bool onTouchBegan(Touch *touch, Event *unused_event);
@@ -145,6 +151,7 @@ private:
     //牌桌层
     Layer* m_TableLayer;
     Sprite* m_Clock;
+    Label* m_ClockNum;
     
     //特效层
     Layer* m_AnimLayer;
@@ -165,6 +172,7 @@ private:
     Sprite* m_MyPlayer;
     Sprite* m_RightPlayer;
     Label* m_LeftCardNumberLabel[3];            //剩余牌数label
+    Sprite* m_PlayerSpeak[3];                            //玩家说的话
     
     //剧情层
     LayerColor* m_StoryLayer;
@@ -188,6 +196,10 @@ private:
     
     
     int m_LeftCardNumber[3];                    //剩余牌数
+    
+    GameState m_GameState;              //游戏状态
+    
+    int m_CurrPlayer;                           //当前轮到谁操作
     
 };
 
