@@ -201,6 +201,10 @@ private:
     
     int m_CurrPlayer;                           //当前轮到谁操作
     
+    int m_TempCallScore;            //目前叫分的最高分
+    
+    int m_TempLordIndex;            //目前叫分最高的玩家序号
+    
 };
 
 #endif /* GameLayer_hpp */

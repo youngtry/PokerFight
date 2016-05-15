@@ -59,6 +59,7 @@
 		8F5B63A01CA13D2600D8A3FC /* tools.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B639B1CA13D2600D8A3FC /* tools.mm */; };
 		8F5B63A61CA13E7500D8A3FC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8F5B63A81CA13E7500D8A3FC /* Localizable.strings */; };
 		8F5B63AE1CA144BC00D8A3FC /* GameData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B63AC1CA144BC00D8A3FC /* GameData.cpp */; };
+		8F6488501CE8C1EA00C61137 /* GameLogic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F64884E1CE8C1EA00C61137 /* GameLogic.cpp */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
 		BF1712471292920000B8313A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB412928DE900B8313A /* libz.dylib */; };
 		BF1C47F01293687400B63C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1C47EA1293683800B63C5D /* QuartzCore.framework */; };
@@ -133,6 +134,8 @@
 		8F5B63A91CA13E8200D8A3FC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		8F5B63AC1CA144BC00D8A3FC /* GameData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameData.cpp; sourceTree = "<group>"; };
 		8F5B63AD1CA144BC00D8A3FC /* GameData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameData.h; sourceTree = "<group>"; };
+		8F64884E1CE8C1EA00C61137 /* GameLogic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameLogic.cpp; sourceTree = "<group>"; };
+		8F64884F1CE8C1EA00C61137 /* GameLogic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameLogic.h; sourceTree = "<group>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BF170DB412928DE900B8313A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BF1C47EA1293683800B63C5D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -352,6 +355,8 @@
 			children = (
 				8F5B63971CA13D2600D8A3FC /* GameLayer.cpp */,
 				8F5B63981CA13D2600D8A3FC /* GameLayer.h */,
+				8F64884E1CE8C1EA00C61137 /* GameLogic.cpp */,
+				8F64884F1CE8C1EA00C61137 /* GameLogic.h */,
 			);
 			path = Scene;
 			sourceTree = "<group>";
@@ -501,6 +506,7 @@
 				8F5B639E1CA13D2600D8A3FC /* MakeCard.cpp in Sources */,
 				8F5B63AE1CA144BC00D8A3FC /* GameData.cpp in Sources */,
 				503AE10117EB989F00D1A890 /* main.m in Sources */,
+				8F6488501CE8C1EA00C61137 /* GameLogic.cpp in Sources */,
 				8F5B639D1CA13D2600D8A3FC /* AnalysisData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -44,6 +44,8 @@ GameLayer::GameLayer()
 ,m_ClockNum(NULL)
 ,m_GameState(GameNull)
 ,m_CurrPlayer(-1)
+,m_TempCallScore(0)
+,m_TempLordIndex(-1)
 {
     m_LeftCard.clear();
     m_MyCard.clear();
@@ -178,6 +180,13 @@ void GameLayer::DealCards(){
 }
 
 void GameLayer::CallScore(int score){
+    
+    if(score>m_TempCallScore){
+        m_TempCallScore = score;
+        if(m_CurrPlayer<2){
+            m_TempLordIndex = m_CurrPlayer+1;
+        }
+    }
     if(m_CurrPlayer == -1){
         m_CurrPlayer = 0;
         showClock(CloclkTime, 0);
@@ -185,6 +194,18 @@ void GameLayer::CallScore(int score){
         m_CurrPlayer = 1;
         showClock(CloclkTime, 1);
         showCallScoreMenu(true);
+    }else if (m_CurrPlayer == 1){
+        m_CurrPlayer = 2;
+        showClock(CloclkTime, 2);
+    }
+
+    
+    if(score == 3){
+        hideClock();
+        m_TempCallScore = 0;
+        m_LordIndex = m_TempLordIndex;
+        m_CurrPlayer = -1;
+        changeToGameState(GameGetLord);
     }
 }
 
@@ -412,14 +433,18 @@ void GameLayer::OutTimehandle()
 void GameLayer::ComputerOperation(){
 
     if(m_GameState == GameCallScore){
+        int score = AutoCallScore();
         if(m_CurrPlayer == 0){
-            int score = AutoCallScore();
+           
             m_PlayerSpeak[0]->setTexture(__String::createWithFormat("speak/lord_speak_%d_call_left.png",score)->getCString());
             m_PlayerSpeak[0]->setVisible(true);
-            CallScore(score);
+            
         }else if (m_CurrPlayer == 2){
             
+            m_PlayerSpeak[2]->setTexture(__String::createWithFormat("speak/lord_speak_%d_call_right.png",score)->getCString());
+            m_PlayerSpeak[2]->setVisible(true);
         }
+        CallScore(score);
     }else if (m_GameState == GameDouble){
         bool isdouble = isDouble();
         if(m_CurrPlayer == 0){
@@ -519,7 +544,7 @@ void GameLayer::showClock(int time,int seat){
         int num = std::atoi(m_ClockNum->getString().c_str());
         CCLOG("num = %d",num);
         
-        if(CloclkTime - num == 2){
+        if(CloclkTime - num == 2 && m_CurrPlayer != 1){
             GameLayer::hideClock();
             GameLayer::ComputerOperation();
             return;
@@ -906,10 +931,13 @@ void GameLayer::createMenuLayer(){
     /**********创建叫分菜单**********/
     //不叫
     MenuItem* call0 = MenuItemSprite::create(Sprite::create("Button/scorebtn/callscore_0_n.png"), Sprite::create("Button/scorebtn/callscore_0_p.png"), Sprite::create("Button/scorebtn/callscore_0_d.png"), CC_CALLBACK_0(GameLayer::ScroeCallBack,this, 0));
+    call0->setTag(0);
     //1分
     MenuItem* call1 = MenuItemSprite::create(Sprite::create("Button/scorebtn/callscore_1_n.png"), Sprite::create("Button/scorebtn/callscore_1_p.png"), Sprite::create("Button/scorebtn/callscore_1_d.png"), CC_CALLBACK_0(GameLayer::ScroeCallBack, this,1));
+    call1->setTag(1);
     //2分
     MenuItem* call2 = MenuItemSprite::create(Sprite::create("Button/scorebtn/callscore_2_n.png"), Sprite::create("Button/scorebtn/callscore_2_p.png"), Sprite::create("Button/scorebtn/callscore_2_d.png"), CC_CALLBACK_0(GameLayer::ScroeCallBack, this,2));
+    call2->setTag(2);
     //3分
     MenuItem* call3 = MenuItemSprite::create(Sprite::create("Button/scorebtn/callscore_3_n.png"), Sprite::create("Button/scorebtn/callscore_3_p.png"), CC_CALLBACK_0(GameLayer::ScroeCallBack, this,3));
     call1->setPosition(Vec2(m_winSize.width/2-2.5-call1->getContentSize().width/2, m_winSize.height*0.43));
@@ -1014,6 +1042,17 @@ void GameLayer::showCallScoreMenu(bool show){
     if(m_CallScoreMenu != NULL){
         m_CallScoreMenu->setEnabled(show);
         m_CallScoreMenu->setVisible(show);
+        
+        if(m_TempCallScore == 1){
+            MenuItemSprite* call1 = (MenuItemSprite*)m_CallScoreMenu->getChildByTag(1);
+            call1->setEnabled(false);
+        }else if(m_TempCallScore == 2){
+            MenuItemSprite* call1 = (MenuItemSprite*)m_CallScoreMenu->getChildByTag(1);
+            call1->setEnabled(false);
+            
+            MenuItemSprite* call2 = (MenuItemSprite*)m_CallScoreMenu->getChildByTag(2);
+            call2->setEnabled(false);
+        }
     }
 }
 
@@ -1035,6 +1074,25 @@ void GameLayer::PlayCallBack(int tag){
 
 void GameLayer::ScroeCallBack(int tag){
     log("ScroeCallBack ----- tag = %d",tag);
+    hideClock();
+    hideMenuLayer();
+    if(tag == 3){
+        
+        m_PlayerSpeak[1]->setVisible(true);
+        m_PlayerSpeak[1]->setTexture(__String::createWithFormat("speak/lord_speak_%d_call_left.png",tag)->getCString());
+        
+        m_LordIndex = 1;
+        m_CurrPlayer = -1;
+        changeToGameState(GameGetLord);
+        
+        
+        return;
+    }
+    
+    m_PlayerSpeak[1]->setVisible(true);
+    m_PlayerSpeak[1]->setTexture(__String::createWithFormat("speak/lord_speak_%d_call_left.png",tag)->getCString());
+    
+    CallScore(tag);
 }
 
 void GameLayer::DoubleCallBack(int tag){
