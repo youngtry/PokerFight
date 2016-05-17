@@ -440,7 +440,6 @@ void GameLayer::ComputerOperation(){
             m_PlayerSpeak[0]->setVisible(true);
             
         }else if (m_CurrPlayer == 2){
-            
             m_PlayerSpeak[2]->setTexture(__String::createWithFormat("speak/lord_speak_%d_call_right.png",score)->getCString());
             m_PlayerSpeak[2]->setVisible(true);
         }

@@ -49,9 +49,14 @@ bool GameLogic::getDoubleInfo(int index){
 }
 
 int GameLogic::HandCardScore(vector<PokerCard *> card){
-    
+    m_HandCard.assign(card.begin(), card.end());
     return 100;
 }
+
+void GameLogic::ChooseSpecialCard(){
+    
+}
+
 
 
 
