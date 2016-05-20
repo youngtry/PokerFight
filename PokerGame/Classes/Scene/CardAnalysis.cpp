@@ -81,26 +81,77 @@ bool CardAnalysis::CanFixSanDaier(vector<PokerCard* > card,vector<PokerCard* > o
 
 bool CardAnalysis::CanFixShunzi(vector<PokerCard* > card,vector<PokerCard* > origincard,int count){
     if(card.size() == count){
-        
+        MakeCard::getInstance()->sequenceCards(card);
+        int value = card[0]->getValue();
+        for(int i=1;i<count;i++){
+            if(value - card[i]->getValue() != 1){
+                return false;
+            }else{
+                value = card[i]->getValue();
+            }
+        }
+        return true;
     }
+    return false;
 }
 
 bool CardAnalysis::CanFixLiandui(vector<PokerCard* > card,vector<PokerCard* > origincard,int count){
+    if(card.size() == count*2){
+        MakeCard::getInstance()->sequenceCards(card);
+        int value = card[0]->getValue();
+        for(int i=2;i<count;){
+            if(value - card[i]->getValue() != 1){
+                return false;
+            }else{
+                value = card[i]->getValue();
+                i=i+2;
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 bool CardAnalysis::CanFixFeiji(vector<PokerCard* > card,vector<PokerCard* > origincard,int count){
+    if(card.size() == count*3){
+        MakeCard::getInstance()->sequenceCards(card);
+        int value = card[0]->getValue();
+        for(int i=3;i<count;){
+            if(value - card[i]->getValue() != 1){
+                return false;
+            }else{
+                value = card[i]->getValue();
+                i=i+3;
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 bool CardAnalysis::CanFixFeijiDaidan(vector<PokerCard* > card,vector<PokerCard* > origincard,int count){
+    if(card.size() == count*4){
+        vector<PokerCard* > feiji;
+        vector<PokerCard* > dan;
+        vector<PokerCard* >::iterator itr = card.begin();
+        while (itr != card.end()) {
+            PokerCard* poker = *itr;
+        }
+    }
+    
+    return false;
 }
 
 bool CardAnalysis::CanFixFeijiDaidui(vector<PokerCard* > card,vector<PokerCard* > origincard,int count){
+     return false;
 }
 
 bool CardAnalysis::CanFixZhadan(vector<PokerCard* > card,vector<PokerCard* > origincard,int count){
+     return false;
 }
 
 bool CardAnalysis::CanFixWangzha(vector<PokerCard* > card,vector<PokerCard* > origincard){
+     return false;
 }
 
 int CardAnalysis::GetSameValueCount(vector<PokerCard *> card, int value){
