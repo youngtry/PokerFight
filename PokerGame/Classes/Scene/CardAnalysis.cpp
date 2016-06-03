@@ -136,6 +136,17 @@ bool CardAnalysis::CanFixFeijiDaidan(vector<PokerCard* > card,vector<PokerCard* 
         vector<PokerCard* >::iterator itr = card.begin();
         while (itr != card.end()) {
             PokerCard* poker = *itr;
+            if(GetSameValueCount(card, poker->getValue()) == 3){
+                PokerCard* _poker = PokerCard::createPokerCard(poker->getNumber(), poker->getColor());
+                feiji.push_back(_poker);
+            }else if (GetSameValueCount(card, poker->getValue()) == 1){
+                PokerCard* _poker = PokerCard::createPokerCard(poker->getNumber(), poker->getColor());
+                dan.push_back(_poker);
+            }
+            itr++;
+        }
+        if(CanFixFeiji(feiji, card,count) && dan.size() == count && feiji.size()+dan.size() == card.size()){
+            return true;
         }
     }
     
@@ -143,14 +154,45 @@ bool CardAnalysis::CanFixFeijiDaidan(vector<PokerCard* > card,vector<PokerCard* 
 }
 
 bool CardAnalysis::CanFixFeijiDaidui(vector<PokerCard* > card,vector<PokerCard* > origincard,int count){
-     return false;
+    if(card.size() == count*5){
+        vector<PokerCard* > feiji;
+        vector<PokerCard* > dan;
+        vector<PokerCard* >::iterator itr = card.begin();
+        while (itr != card.end()) {
+            PokerCard* poker = *itr;
+            if(GetSameValueCount(card, poker->getValue()) == 3){
+                PokerCard* _poker = PokerCard::createPokerCard(poker->getNumber(), poker->getColor());
+                feiji.push_back(_poker);
+            }else if (GetSameValueCount(card, poker->getValue()) == 2){
+                PokerCard* _poker = PokerCard::createPokerCard(poker->getNumber(), poker->getColor());
+                dan.push_back(_poker);
+            }
+            itr++;
+        }
+        if(CanFixFeiji(feiji, card,count) && dan.size() == count*2 && feiji.size()+dan.size() == card.size()){
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 bool CardAnalysis::CanFixZhadan(vector<PokerCard* > card,vector<PokerCard* > origincard,int count){
+    if(card.size()== count){
+        if(GetSameValueCount(card, card[0]->getValue())==count){
+            return true;
+        }
+    }
      return false;
 }
 
 bool CardAnalysis::CanFixWangzha(vector<PokerCard* > card,vector<PokerCard* > origincard){
+    if(card.size() == 2){
+        MakeCard::getInstance()->sequenceCards(card);
+        if(card[0]->getValue() == 17 && card[1]->getValue() == 16){
+            return true;
+        }
+    }
      return false;
 }
 
