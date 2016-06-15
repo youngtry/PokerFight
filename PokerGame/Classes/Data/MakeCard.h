@@ -29,7 +29,8 @@ public:
     bool removeCardFromAll(int number,PokerColor color);
     
     void createPlayersCard();
-    void sequenceCards(std::vector<PokerCard* > &card);
+    void sequenceCards(std::vector<PokerCard* > &card); //从大到小排
+    void sequenceCardsWithBigger(std::vector<PokerCard* > &card);//从小到大排
     std::vector<PokerCard* > m_AllCard;
     std::vector<PokerCard* > m_LeftCard;
     std::vector<PokerCard* > m_MyCard;

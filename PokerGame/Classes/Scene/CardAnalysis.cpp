@@ -229,6 +229,8 @@ int CardAnalysis::GetDeffrientValueCount(vector<PokerCard *> card){
 #pragma mark 提取各种牌型的全部组合(包括拆牌的)
 
 void CardAnalysis::getAllSingle(vector<PokerCard *> &AllTips, vector<PokerCard *> &AllCards, vector<PokerCard *> origincard){
+    MakeCard::getInstance()->sequenceCardsWithBigger(origincard);
+    
     
 }
 
