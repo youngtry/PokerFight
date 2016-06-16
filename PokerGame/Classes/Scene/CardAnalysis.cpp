@@ -228,44 +228,44 @@ int CardAnalysis::GetDeffrientValueCount(vector<PokerCard *> card){
 
 #pragma mark 提取各种牌型的全部组合(包括拆牌的)
 
-void CardAnalysis::getAllSingle(vector<PokerCard *> &AllTips, vector<PokerCard *> &AllCards, vector<PokerCard *> origincard){
+void CardAnalysis::getAllSingle(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards, vector<PokerCard *> origincard){
     MakeCard::getInstance()->sequenceCardsWithBigger(origincard);
     
     
 }
 
-void CardAnalysis::getAllDoubles(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard){
+void CardAnalysis::getAllDoubles(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
     
 }
 
-void CardAnalysis::getAllSanzhang(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard){
+void CardAnalysis::getAllSanzhang(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
 }
 
-void CardAnalysis::getAllSandaiyi(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard){
+void CardAnalysis::getAllSandaiyi(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
 }
 
-void CardAnalysis::getAllSandaier(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard){
+void CardAnalysis::getAllSandaier(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
 }
 
-void CardAnalysis::getAllShunzi(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count){
+void CardAnalysis::getAllShunzi(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count){
 }
 
-void CardAnalysis::getAllLiandui(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count){
+void CardAnalysis::getAllLiandui(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count){
 }
 
-void CardAnalysis::getAllFeiji(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count){
+void CardAnalysis::getAllFeiji(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count){
 }
 
-void CardAnalysis::getAllFeijidaidan(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count){
+void CardAnalysis::getAllFeijidaidan(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count){
 }
 
-void CardAnalysis::getAllFeijidaidui(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count){
+void CardAnalysis::getAllFeijidaidui(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count){
 }
 
-void CardAnalysis::getAllZhadan(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count){
+void CardAnalysis::getAllZhadan(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count){
 }
 
-void CardAnalysis::getAllWangzha(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard){
+void CardAnalysis::getAllWangzha(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
 }
 
 

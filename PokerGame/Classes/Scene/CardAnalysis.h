@@ -74,29 +74,29 @@ public:
     /******************************提取各种牌型的全部组合(包括拆牌的)******************************/
     //Alltips——按提示时说提取的牌型，同值的只提取一次
     //AllCards——所有的可能，同值不同色的牌也算在内
-    void getAllSingle(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard);
+    void getAllSingle(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard);
     
-    void getAllDoubles(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard);
+    void getAllDoubles(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard);
     
-    void getAllSanzhang(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard);
+    void getAllSanzhang(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard);
     
-    void getAllSandaiyi(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard);
+    void getAllSandaiyi(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard);
     
-    void getAllSandaier(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard);
+    void getAllSandaier(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard);
     
-    void getAllShunzi(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count);
+    void getAllShunzi(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count);
     
-    void getAllLiandui(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count);
+    void getAllLiandui(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count);
     
-    void getAllFeiji(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count);
+    void getAllFeiji(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count);
     
-    void getAllFeijidaidan(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count);
+    void getAllFeijidaidan(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count);
     
-    void getAllFeijidaidui(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count);
+    void getAllFeijidaidui(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count);
     
-    void getAllZhadan(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard,int count);
+    void getAllZhadan(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count);
     
-    void getAllWangzha(vector<PokerCard* > &AllTips,vector<PokerCard* > &AllCards,vector<PokerCard* > origincard);
+    void getAllWangzha(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard);
 };
 
 #endif /* CardAnalysis_hpp */
