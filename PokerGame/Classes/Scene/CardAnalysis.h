@@ -97,6 +97,10 @@ public:
     void getAllZhadan(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count);
     
     void getAllWangzha(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard);
+    
+public:
+    
+    int _MinValue;  //在提取各种牌型的全部组合时的最小值（用于获取接牌提示，不接牌则为0）
 };
 
 #endif /* CardAnalysis_hpp */

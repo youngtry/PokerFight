@@ -11,6 +11,7 @@
 #include "../Data/MakeCard.h"
 
 CardAnalysis::CardAnalysis(){
+    _MinValue = 0;
 }
 
 CardAnalysis::~CardAnalysis(){
@@ -230,7 +231,14 @@ int CardAnalysis::GetDeffrientValueCount(vector<PokerCard *> card){
 
 void CardAnalysis::getAllSingle(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards, vector<PokerCard *> origincard){
     MakeCard::getInstance()->sequenceCardsWithBigger(origincard);
-    
+    Vector<PokerCard* >::iterator itr = origincard.begin();
+    while (itr != origincard.end()) {
+        PokerCard* card = *itr;
+        if(card->getValue() > _MinValue){
+            Vector<PokerCard* > singlecard;
+            singlecard.pushBack(PokerCard::createPokerCard(card->getNumber(), card->getColor()));
+        }
+    }
     
 }
 
