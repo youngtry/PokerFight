@@ -70,6 +70,9 @@ public:
     
     int GetDeffrientValueCount(vector<PokerCard* > card);   //获取card中有几种值
     
+    void GetSameValueCardsWithsCount(vector<PokerCard* > card,int value,int count,bool isAll=false); //根据count获取值相同牌，isAll为true的时候需要获取所有的组合，false则获取一组就行
+    void getCombo(vector<PokerCard* > &card,int m,int k);
+    int getCountKind(int count,int needcount);//获取组合数目
     
     /******************************提取各种牌型的全部组合(包括拆牌的)******************************/
     //Alltips——按提示时说提取的牌型，同值的只提取一次
@@ -98,9 +101,15 @@ public:
     
     void getAllWangzha(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard);
     
+    void getSameValueWithViceCards(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count,bool withVice = false,int vicecount=0);//累死单张、对子这种，也可以带，如三带一
+    
 public:
     
     int _MinValue;  //在提取各种牌型的全部组合时的最小值（用于获取接牌提示，不接牌则为0）
+    
+private:
+    
+    vector<vector<PokerCard* > >  m_TempTipCard;
 };
 
 #endif /* CardAnalysis_hpp */

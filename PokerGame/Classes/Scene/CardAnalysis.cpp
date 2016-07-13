@@ -12,6 +12,7 @@
 
 CardAnalysis::CardAnalysis(){
     _MinValue = 0;
+    m_TempTipCard.clear();
 }
 
 CardAnalysis::~CardAnalysis(){
@@ -227,32 +228,141 @@ int CardAnalysis::GetDeffrientValueCount(vector<PokerCard *> card){
     return count;
 }
 
+int a[100];
+void CardAnalysis::GetSameValueCardsWithsCount(vector<PokerCard* > card,int value,int count,bool isAll){
+    
+    m_TempTipCard.clear();
+    
+    if(GetSameValueCount(card, value) < count){
+        CCLOG("少于所需张数");
+        return;
+    }
+    int _count = GetSameValueCount(card, value);
+    int num = getCountKind(_count, count);
+    
+    vector<PokerCard* >::iterator itr = card.begin();
+    vector<PokerCard* > temp;
+    while (itr!=card.end()) {
+        PokerCard* _card = *itr;
+        if(_card->getValue() == value){
+            if(!isAll || _count == count){
+                if(temp.size() < count){
+                    temp.push_back(PokerCard::createPokerCard(_card->getNumber(), _card->getColor()));
+                }else if (m_TempTipCard.size() == count){
+                    m_TempTipCard.push_back(temp);
+                    return;
+                }
+            }else{
+                temp.push_back(PokerCard::createPokerCard(_card->getNumber(), _card->getColor()));
+            }
+        }
+        
+        itr++;
+    }
+    if(num>1 && temp.size()>count){
+        a[0] = count;
+        getCombo(temp, _count, count);
+    } 
+}
+
+void CardAnalysis::getCombo(vector<PokerCard* > &card,int m,int k){
+    int i,j;
+    for (i=m;i>=k;i--)
+    {
+        a[k]=i;
+        if (k>1)
+        {
+            getCombo(card,i-1,k-1);
+        }
+        else
+        { 
+            vector<PokerCard* > temp;
+            for (j=a[0];j>0;j--)
+            {
+                CCLOG("a[%d] = %d",j,a[j]);
+                if(a[j]-1<card.size()){
+                    temp.push_back(PokerCard::createPokerCard(card[a[j]-1]->getNumber(), card[a[j]-1]->getColor()));
+                }
+            }
+            if(temp.size()>0){
+               m_TempTipCard.push_back(temp); 
+            }
+            
+            CCLOG("*********************");
+            
+        }
+    }
+}
+
+int CardAnalysis::getCountKind(int count, int needcount){
+    if(count<needcount){
+        return 0;
+    }
+    if(count == needcount){
+        return 1;
+    }
+    vector<PokerCard* > card;
+    a[0] = 1;
+    getCombo(card, 4, 1);
+    int num = 0;
+    std::function<int(int)> fac = [&fac](int n) ->int{ return n == 1 ? 1 : n*fac(n - 1); } ;
+    num = fac(count)/(fac(count-needcount)*fac(needcount));
+    CCLOG("*******num = %d*********",num);
+    return num;
+}
+
 #pragma mark 提取各种牌型的全部组合(包括拆牌的)
 
 void CardAnalysis::getAllSingle(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards, vector<PokerCard *> origincard){
-    MakeCard::getInstance()->sequenceCardsWithBigger(origincard);
-    Vector<PokerCard* >::iterator itr = origincard.begin();
-    while (itr != origincard.end()) {
-        PokerCard* card = *itr;
-        if(card->getValue() > _MinValue){
-            Vector<PokerCard* > singlecard;
-            singlecard.pushBack(PokerCard::createPokerCard(card->getNumber(), card->getColor()));
-        }
-    }
     
+    getSameValueWithViceCards(AllTips, AllCards, origincard, 1);    
 }
 
 void CardAnalysis::getAllDoubles(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
     
+    getSameValueWithViceCards(AllTips, AllCards, origincard, 2);
 }
 
 void CardAnalysis::getAllSanzhang(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
+    
+    getSameValueWithViceCards(AllTips, AllCards, origincard, 3);
 }
 
 void CardAnalysis::getAllSandaiyi(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
+    vector<vector<PokerCard* > >  AllSanzhangTips;
+    vector<vector<PokerCard* > > AllSanzhangCards;
+    getAllSanzhang(AllSanzhangTips, AllSanzhangCards, origincard);
+    vector<vector<PokerCard* > >  AllSingleTips;
+    vector<vector<PokerCard* > > AllSingleCards;
+    getAllSingle(AllSingleTips, AllSingleCards, origincard);
+    for(int i=0;i<AllSanzhangTips.size();i++)
+    {
+        int value = AllSanzhangTips[i][0]->getValue();
+        for(int j=0;j<AllSingleTips.size();j++){
+            if(value != AllSingleTips[j][0]->getValue()){
+                vector<PokerCard* > temp;
+                temp.assign(AllSanzhangTips[i].begin(), AllSanzhangTips[i].end());
+                temp.insert(temp.end(), AllSingleTips[j].begin(),AllSingleTips[j].end());
+                AllTips.push_back(temp);
+            }
+        }
+    }
+    for(int i=0;i<AllSanzhangCards.size();i++)
+    {
+        int value = AllSanzhangCards[i][0]->getValue();
+        for(int j=0;j<AllSingleCards.size();j++){
+            if(value != AllSingleCards[j][0]->getValue()){
+                vector<PokerCard* > temp;
+                temp.assign(AllSanzhangCards[i].begin(), AllSanzhangCards[i].end());
+                temp.insert(temp.end(), AllSingleCards[j].begin(),AllSingleCards[j].end());
+                AllTips.push_back(temp);
+            }
+        }
+    } 
 }
 
 void CardAnalysis::getAllSandaier(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
+    
 }
 
 void CardAnalysis::getAllShunzi(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count){
@@ -274,6 +384,40 @@ void CardAnalysis::getAllZhadan(vector<vector<PokerCard* > >  &AllTips,vector<ve
 }
 
 void CardAnalysis::getAllWangzha(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
+}
+
+void CardAnalysis::getSameValueWithViceCards(vector<vector<PokerCard *> > &AllTips, vector<vector<PokerCard *> > &AllCards, vector<PokerCard *> origincard,int count,bool withVice,int vicecount){
+    MakeCard::getInstance()->sequenceCardsWithBigger(origincard);
+    vector<PokerCard* >::iterator itr = origincard.begin();
+    int value = 0;
+    while (itr != origincard.end()) {
+        PokerCard* card = *itr;
+        if(GetSameValueCount(origincard, card->getValue()) == count && card->getValue()>_MinValue ){
+            if(value != card->getValue()){
+                GetSameValueCardsWithsCount(origincard, card->getValue(), count);
+                AllTips.assign(m_TempTipCard.begin(), m_TempTipCard.end());
+                GetSameValueCardsWithsCount(origincard, card->getValue(), count,true);
+                AllCards.assign(m_TempTipCard.begin(), m_TempTipCard.end());
+            }else{
+                value = card->getValue();
+            }
+        }
+        itr++;
+    }
+    while (itr != origincard.end()) {
+        PokerCard* card = *itr;
+        if(GetSameValueCount(origincard, card->getValue()) > count && card->getValue()>_MinValue ){
+            if(value != card->getValue()){
+                GetSameValueCardsWithsCount(origincard, card->getValue(), count);
+                AllTips.assign(m_TempTipCard.begin(), m_TempTipCard.end());
+                GetSameValueCardsWithsCount(origincard, card->getValue(), count,true);
+                AllCards.assign(m_TempTipCard.begin(), m_TempTipCard.end());
+            }else{
+                value = card->getValue();
+            }
+        }
+        itr++;
+    }
 }
 
 

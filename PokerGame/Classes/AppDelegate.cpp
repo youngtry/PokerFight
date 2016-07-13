@@ -5,6 +5,8 @@
 #include "GameLayer.h"
 USING_NS_CC;
 
+#include "CardAnalysis.h"
+
 AppDelegate::AppDelegate() {
 
 }
@@ -42,6 +44,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     FileUtils::getInstance()->addSearchPath("res");
+    
+    CardAnalysis::CreateAnalysis()->getCountKind(5, 3);
 
     // create a scene. it's an autorelease object
     auto scene = GameLayer::createGameScene();
