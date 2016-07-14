@@ -101,7 +101,9 @@ public:
     
     void getAllWangzha(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard);
     
-    void getSameValueWithViceCards(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count,bool withVice = false,int vicecount=0);//累死单张、对子这种，也可以带，如三带一
+    void getSameValueWithoutViceCards(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count);//类似单张、对子这种
+    
+    void getSameValueWithVice(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard,int count,int vicecount);//三带一，三带二，四带二也可以
     
 public:
     

@@ -315,17 +315,17 @@ int CardAnalysis::getCountKind(int count, int needcount){
 
 void CardAnalysis::getAllSingle(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards, vector<PokerCard *> origincard){
     
-    getSameValueWithViceCards(AllTips, AllCards, origincard, 1);    
+    getSameValueWithoutViceCards(AllTips, AllCards, origincard, 1);
 }
 
 void CardAnalysis::getAllDoubles(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
     
-    getSameValueWithViceCards(AllTips, AllCards, origincard, 2);
+    getSameValueWithoutViceCards(AllTips, AllCards, origincard, 2);
 }
 
 void CardAnalysis::getAllSanzhang(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
     
-    getSameValueWithViceCards(AllTips, AllCards, origincard, 3);
+    getSameValueWithoutViceCards(AllTips, AllCards, origincard, 3);
 }
 
 void CardAnalysis::getAllSandaiyi(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
@@ -386,7 +386,7 @@ void CardAnalysis::getAllZhadan(vector<vector<PokerCard* > >  &AllTips,vector<ve
 void CardAnalysis::getAllWangzha(vector<vector<PokerCard* > >  &AllTips,vector<vector<PokerCard* > > &AllCards,vector<PokerCard* > origincard){
 }
 
-void CardAnalysis::getSameValueWithViceCards(vector<vector<PokerCard *> > &AllTips, vector<vector<PokerCard *> > &AllCards, vector<PokerCard *> origincard,int count,bool withVice,int vicecount){
+void CardAnalysis::getSameValueWithoutViceCards(vector<vector<PokerCard *> > &AllTips, vector<vector<PokerCard *> > &AllCards, vector<PokerCard *> origincard,int count){
     MakeCard::getInstance()->sequenceCardsWithBigger(origincard);
     vector<PokerCard* >::iterator itr = origincard.begin();
     int value = 0;
